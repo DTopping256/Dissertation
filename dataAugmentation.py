@@ -51,16 +51,21 @@ augmented_data = []
 data_size = len(data)
 for j in range(int(data_size/4)):
     
-    print("Processing augmented data - {}/{}".format(j, data_size))
+    print("Processing augmented data - {}/{} ({}%)".format(j*4, data_size, round(j*4/data_size*100, 2)))
     # Process augmentation stacks of data in batches
     processing_start_time = time.time()
     for d in data[j*4:(j+1)*4]:
         aug_data = collections.OrderedDict([("-".join(stack), []) for stack in aug_stack])
         for s in range(stacks):
             stack_key = aug_keys[s]
-            aug_samples = d.data
-            for aug in aug_stack[s]:
+            aug_samples = []
+            for j in range(len(aug_stack[s])):
+                aug = aug_stack[s][j]
                 for i in range(10):
+                    if (j == 0):
+                        samples = d.data
+                    else:
+                        samples = aug_samples[i]
                     args = []
                     var = i+1
                     if aug == "amplitude":
@@ -69,12 +74,16 @@ for j in range(int(data_size/4)):
                     if aug == "pitch":
                         args = [d.rate]
                         var = i - 5 if i < 5 else i - 4
-                    aug_samples = augmentations[aug](aug_samples, var, *args)
-            aug_data[stack_key].append(aug_samples)
+                    samples = augmentations[aug](samples, var, *args)
+                    if (j == 0):
+                        aug_samples.append(samples)
+                    else:
+                        aug_samples[i] = samples
+            aug_data[stack_key] = aug_samples
         augmented_data.append((aug_data, d.labels, d.rate))
     processing_end_time = time.time()
     
-    print("\tExecuted in: {}\nSaving augmented data - {}/{}".format(round(processing_end_time-processing_start_time, 2), j, data_size))
+    print("\tExecuted in: {}\nSaving augmented data - {}/{} ({}%)".format(round(processing_end_time-processing_start_time, 2), j*4, data_size, round(j*4/data_size*100, 2)))
     # Save augmented data as seperate wav files in batches
     for aug_data, labels, rate in augmented_data[j*4:(j+1)*4]:
         subdirs = [labels[label] for label in SETTINGS.dir_structure]
