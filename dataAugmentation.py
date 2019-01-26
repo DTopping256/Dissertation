@@ -59,10 +59,10 @@ for j in range(int(data_size/4)):
         for s in range(stacks):
             stack_key = aug_keys[s]
             aug_samples = []
-            for j in range(len(aug_stack[s])):
-                aug = aug_stack[s][j]
+            for p in range(len(aug_stack[s])):
+                aug = aug_stack[s][p]
                 for i in range(10):
-                    if (j == 0):
+                    if (p == 0):
                         samples = d.data
                     else:
                         samples = aug_samples[i]
@@ -75,7 +75,7 @@ for j in range(int(data_size/4)):
                         args = [d.rate]
                         var = i - 5 if i < 5 else i - 4
                     samples = augmentations[aug](samples, var, *args)
-                    if (j == 0):
+                    if (p == 0):
                         aug_samples.append(samples)
                     else:
                         aug_samples[i] = samples
