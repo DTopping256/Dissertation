@@ -1,3 +1,6 @@
 *.zip
-preprocessed_data/
-impulses/
+audio_data/cropped_data
+audio_data/pre-multiclass_augmented_data
+audio_data/multiclassed_data
+audio_data/post-multiclass_augmented_data
+audio_data/training_data
