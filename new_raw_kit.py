@@ -28,11 +28,11 @@ def create_subdirs(kit_name):
                     except OSError:
                         print("Couldn't make new path: ", path)
                         return False
-    print("Make directory structure at: ", root_path, "under", kit_name)
+    print("Made directory structure at: ", root_path, "under", kit_name)
     return True
 
 parser = argparse.ArgumentParser(description="Generate subdirectories for a new set of raw data")
-parser.add_argument("-kit_name")
+parser.add_argument("-kit_name", help="The name of the subdirectory directly in the raw data directory.")
 args = parser.parse_args(sys.argv[1:])
 create_subdirs(**vars(args))
 exit()
