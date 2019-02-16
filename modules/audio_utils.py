@@ -82,7 +82,7 @@ def read_data(data_type, file_index=0, batch_size=None, verbose=False, **kwargs)
         print("\tRead failed, since settings not found.")
         return False
     if (data_type not in SETTINGS.data.keys()):
-        print("\t{} is not a valid data_type.")
+        print("\t{} is not a valid data_type.".format(data_type))
         return False
     if (file_index is False):
         print("\tNo batch index provided.")
@@ -108,7 +108,7 @@ def read_data(data_type, file_index=0, batch_size=None, verbose=False, **kwargs)
             # Assign labels from directory structure to a dictionary.
             classes = {data_info["dir_structure"][l]: dirs[l].split("-") for l in range(dir_structure_len)}
             labels = {k: v for k, v in classes.items() if k in LABELS}
-            augmentations = {k: v for k, v in classes.items() if k in PRE_AUGS+POST_AUGS}
+            augmentations = {k: v for k, v in classes.items() if k in AUG_KEYS}
             if (len(including.keys()) > 0):
                 skip = False
                 for k, v in including.items():
@@ -185,11 +185,15 @@ def save_data(data_type, data_set, verbose=False):
     file_data = []
     total_files = len(data_set)
     for data in data_set:
-        hit_labels = data.labels["hit_label"]
-        kit_labels = data.labels["kit_label"]
-        tech_labels = data.labels["tech_label"]
-        pre_augs = [aug for aug in data.augmentations if aug in PRE_AUGS]
-        post_augs = [aug for aug in data.augmentations if aug in POST_AUGS]
+        hit_labels, kit_labels, tech_labels = [], [], []
+        if (data.labels is not None):
+            hit_labels = data.labels["hit_label"]
+            kit_labels = data.labels["kit_label"]
+            tech_labels = data.labels["tech_label"]
+        pre_augs, post_augs = [], []
+        if (data.augmentations is not None):
+            pre_augs = [aug for aug in data.augmentations["pre_augs"] if aug in PRE_AUGS] if "pre_augs" in data.augmentations.keys() else []
+            post_augs = [aug for aug in data.augmentations["post_augs"] if aug in POST_AUGS] if "post_augs" in data.augmentations.keys() else []
         data_added = False
         for fd in file_data:
             if check_in_file_data(fd, hit_labels, kit_labels, tech_labels, pre_augs, post_augs):

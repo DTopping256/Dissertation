@@ -2,5 +2,7 @@
 audio_data/cropped_data
 audio_data/pre-multiclass_augmented_data
 audio_data/multiclassed_data
+audio_data/multiclassed_data_no_augs
+audio_data/multiclassed_data_per_aug
 audio_data/post-multiclass_augmented_data
 audio_data/training_data

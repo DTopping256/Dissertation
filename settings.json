@@ -27,6 +27,32 @@
       "amount": 4,
       "max_file_amount": 560
     },
+    "multiclassed_per_aug": {
+      "path": "audio_data\\multiclassed_data_per_aug",
+      "dir_structure": ["pre_augs", "hit_label", "kit_label", "tech_label"],
+      "file_type": "gz",
+      "batch_size": 100,
+      "hit_combinations": [
+        ["beater"],
+        ["stick"],
+        ["beater", "stick"],
+        ["stick", "stick"],
+        ["beater", "stick", "stick"]
+      ]
+    },
+    "multiclassed_no_augs": {
+      "path": "audio_data\\multiclassed_data_no_augs",
+      "dir_structure": ["hit_label", "kit_label", "tech_label"],
+      "file_type": "gz",
+      "batch_size": 100,
+      "hit_combinations": [
+        ["beater"],
+        ["stick"],
+        ["beater", "stick"],
+        ["stick", "stick"],
+        ["beater", "stick", "stick"]
+      ]
+    },
     "multiclassed": {
       "path": "audio_data\\multiclassed_data",
       "dir_structure": ["pre_augs", "hit_label", "kit_label", "tech_label"],
