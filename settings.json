@@ -31,7 +31,7 @@
       "path": "audio_data\\multiclassed_data_per_aug",
       "dir_structure": ["pre_augs", "hit_label", "kit_label", "tech_label"],
       "file_type": "gz",
-      "batch_size": 100,
+      "batch_size": 50,
       "hit_combinations": [
         ["beater"],
         ["stick"],
@@ -44,7 +44,7 @@
       "path": "audio_data\\multiclassed_data_no_augs",
       "dir_structure": ["hit_label", "kit_label", "tech_label"],
       "file_type": "gz",
-      "batch_size": 100,
+      "batch_size": 50,
       "hit_combinations": [
         ["beater"],
         ["stick"],
@@ -57,7 +57,7 @@
       "path": "audio_data\\multiclassed_data",
       "dir_structure": ["pre_augs", "hit_label", "kit_label", "tech_label"],
       "file_type": "gz",
-      "batch_size": 100,
+      "batch_size": 50,
       "hit_combinations": [
         ["beater"],
         ["stick"],
@@ -68,6 +68,28 @@
     },
     "post_multiclass_augmented": {
       "path": "audio_data\\post-multiclass_augmented_data",
+      "dir_structure": [
+        "pre_augs",
+        "post_augs",
+        "hit_label",
+        "kit_label",
+        "tech_label"
+      ],
+      "file_type": "gz",
+      "batch_size": 100,
+      "augmentation": ["add_noise", "reduce_noise"],
+      "amount": 10
+    },
+    "post_multiclass_augmented_no_pre": {
+      "path": "audio_data\\post-multiclass_augmented_data_no_pre",
+      "dir_structure": ["post_augs", "hit_label", "kit_label", "tech_label"],
+      "file_type": "gz",
+      "batch_size": 100,
+      "augmentation": ["add_noise", "reduce_noise"],
+      "amount": 10
+    },
+    "post_multiclass_augmented_per_pre": {
+      "path": "audio_data\\post-multiclass_augmented_data_per_pre",
       "dir_structure": [
         "pre_augs",
         "post_augs",

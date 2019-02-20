@@ -28,7 +28,7 @@ def white_noise(amount, mu, sigma_squared):
 def data_aug_white_noise(samples, diff, max_diff, **kwargs):
     highest_amplitude = np.amax(samples)
     noise_amplitude = 0.1*highest_amplitude*diff/max_diff
-    return samples + white_noise(len(samples), 0, noise_amp)
+    return np.float32(samples + white_noise(len(samples), 0, noise_amplitude))
 
 def data_aug_reduce_noise(samples, diff, max_diff, **kwargs):
     window_len = 2*int(150*diff/max_diff)+1
@@ -64,7 +64,7 @@ def get_aug_stacks(augmentations):
     return aug_stacks
 
 # Performs all of the pre-multiclass augmentations in every combination a certain amount of times with varied strength to the data-set. 
-def pre_multiclass_augmentation(data_set):
+def pre_multiclass_augmentation(data_set, verbose=False):
     aug_info = SETTINGS.data["pre_multiclass_augmented"]
     augmentations = PRE_MULTI_AUGS
     aug_stacks = get_aug_stacks(augmentations)
@@ -79,7 +79,8 @@ def pre_multiclass_augmentation(data_set):
     for data_i in range(data_size):
         data = data_set[data_i].data
         sample_rate = data_set[data_i].rate
-        print("Processing augmented data - {}/{} ({}%)".format(data_i, data_size, round(data_i/data_size*100, 2)))
+        if verbose:
+            print("Processing augmented data - {}/{} ({}%)".format(data_i, data_size, round(data_i/data_size*100, 2)))
         # Per stack, augment the data with the augmentations in the stack
         processing_start_time = time.time()
         augmented_data = []
@@ -95,6 +96,43 @@ def pre_multiclass_augmentation(data_set):
             augmented_data.append((stack_key, aug_stack_samples))
         all_augmented_data.append(collections.OrderedDict(augmented_data))
     processing_end_time = time.time()
-    print("Time taken:", round(processing_end_time-processing_start_time, 2), "\n")
+    if verbose:
+        print("Time taken:", round(processing_end_time-processing_start_time, 2), "\n")
+    return all_augmented_data
+
+def post_multiclass_augmentation(data_set, verbose=False):
+    aug_info = SETTINGS.data["post_multiclass_augmented"]
+    augmentations = POST_MULTI_AUGS
+    aug_stacks = [[aug] for aug in augmentations]
+
+    # Create new augmentation data ordered dictionary
+    aug_data = collections.OrderedDict([("-".join(stack), []) for stack in aug_stacks])
+    aug_keys = list(aug_data.keys())
+    stacks = len(aug_keys)
+
+    all_augmented_data = []
+    data_size = len(data_set)
+    for data_i in range(data_size):
+        data = data_set[data_i].data
+        sample_rate = data_set[data_i].rate
+        if verbose: 
+            print("Processing augmented data - {}/{} ({}%)".format(data_i, data_size, round(data_i/data_size*100, 2)))
+        # Per stack, augment the data with the augmentations in the stack
+        processing_start_time = time.time()
+        augmented_data = []
+        for stack in range(stacks):
+            aug_stack = aug_stacks[stack]
+            stack_len = len(aug_stack)
+            stack_is = [s_i for s_i in range(stack_len)]
+            stack_key = aug_keys[stack]
+            aug_stack_samples = []
+            # Combinations of all augmentation diffs
+            for diff in [[i//aug_info["amount"]**j%aug_info["amount"]+1 for j in range(stack_len)] for i in range(aug_info["amount"]**stack_len)]:
+                aug_stack_samples.append(reduce(lambda d, s_i: augmentations[aug_stack[s_i]](d, diff=diff[s_i], max_diff=aug_info["amount"], sample_rate=sample_rate), stack_is, data))
+            augmented_data.append((stack_key, aug_stack_samples))
+        all_augmented_data.append(collections.OrderedDict(augmented_data))
+    processing_end_time = time.time()
+    if verbose:
+        print("Time taken:", round(processing_end_time-processing_start_time, 2), "\n")
     return all_augmented_data
 
