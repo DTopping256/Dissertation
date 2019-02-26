@@ -101,18 +101,6 @@
       "batch_size": 100,
       "augmentation": ["add_noise", "reduce_noise"],
       "amount": 10
-    },
-    "training": {
-      "path": "audio_data\\training_data",
-      "dir_structure": [
-        "pre_augs",
-        "post_augs",
-        "hit_label",
-        "kit_label",
-        "tech_label"
-      ],
-      "file_type": "gz",
-      "batch_size": 50
     }
   },
   "label": {
@@ -139,8 +127,7 @@
       "mid_tom": ["normal"],
       "low_tom": ["normal"],
       "ride": ["normal", "bell"],
-      "snare": ["normal"],
-      "splash": ["normal"]
+      "snare": ["normal"]
     }
   }
 }
