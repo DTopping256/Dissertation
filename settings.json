@@ -1,31 +1,153 @@
 {
-  "data_paths": {
-    "raw": "raw_data/isolated_hits",
-    "cropped": "cropped_data",
-    "impulse": "impulse",
-    "preprocessed": "preprocessed_data"
+  "data": {
+    "raw": {
+      "path": "audio_data\\raw_data\\isolated_hits",
+      "dir_structure": ["hit_label", "kit_label", "tech_label"],
+      "file_type": "wav",
+      "batch_size": 5
+    },
+    "cropped": {
+      "path": "audio_data\\cropped_data",
+      "dir_structure": ["hit_label", "kit_label", "tech_label"],
+      "file_type": "gz",
+      "save_sampling_rate": 48000,
+      "batch_size": 100,
+      "down_sampling_rate": 3000,
+      "hanning_window_size": 100,
+      "length": 0.25,
+      "onset_trim": 1000,
+      "noise_threshold": 0.001
+    },
+    "pre_multiclass_augmented": {
+      "path": "audio_data\\pre-multiclass_augmented_data",
+      "dir_structure": ["pre_augs", "hit_label", "kit_label", "tech_label"],
+      "file_type": "gz",
+      "batch_size": 100,
+      "augmentation": ["amplitude", "pitch", "translate"],
+      "amount": 4,
+      "max_file_amount": 560
+    },
+    "multiclassed_per_aug": {
+      "path": "audio_data\\multiclassed_data_per_aug",
+      "dir_structure": ["pre_augs", "hit_label", "kit_label", "tech_label"],
+      "file_type": "gz",
+      "batch_size": 50,
+      "hit_combinations": [
+        ["beater"],
+        ["stick"],
+        ["beater", "stick"],
+        ["stick", "stick"],
+        ["beater", "stick", "stick"]
+      ]
+    },
+    "multiclassed_no_augs": {
+      "path": "audio_data\\multiclassed_data_no_augs",
+      "dir_structure": ["hit_label", "kit_label", "tech_label"],
+      "file_type": "gz",
+      "batch_size": 50,
+      "hit_combinations": [
+        ["beater"],
+        ["stick"],
+        ["beater", "stick"],
+        ["stick", "stick"],
+        ["beater", "stick", "stick"]
+      ]
+    },
+    "multiclassed": {
+      "path": "audio_data\\multiclassed_data",
+      "dir_structure": ["pre_augs", "hit_label", "kit_label", "tech_label"],
+      "file_type": "gz",
+      "batch_size": 50,
+      "hit_combinations": [
+        ["beater"],
+        ["stick"],
+        ["beater", "stick"],
+        ["stick", "stick"],
+        ["beater", "stick", "stick"]
+      ]
+    },
+    "post_multiclass_augmented": {
+      "path": "audio_data\\post-multiclass_augmented_data",
+      "dir_structure": [
+        "pre_augs",
+        "post_augs",
+        "hit_label",
+        "kit_label",
+        "tech_label"
+      ],
+      "file_type": "gz",
+      "batch_size": 100,
+      "augmentation": ["add_noise", "reduce_noise"],
+      "amount": 10
+    },
+    "post_multiclass_augmented_no_pre": {
+      "path": "audio_data\\post-multiclass_augmented_data_no_pre",
+      "dir_structure": ["post_augs", "hit_label", "kit_label", "tech_label"],
+      "file_type": "gz",
+      "batch_size": 100,
+      "augmentation": ["add_noise", "reduce_noise"],
+      "amount": 10
+    },
+    "post_multiclass_augmented_per_pre": {
+      "path": "audio_data\\post-multiclass_augmented_data_per_pre",
+      "dir_structure": [
+        "pre_augs",
+        "post_augs",
+        "hit_label",
+        "kit_label",
+        "tech_label"
+      ],
+      "file_type": "gz",
+      "batch_size": 100,
+      "augmentation": ["add_noise", "reduce_noise"],
+      "amount": 10
+    },
+  "training":{
+      "path": "audio_data\\training_data",
+      "dir_structure": [
+        "hit_label",
+        "kit_label",
+        "tech_label"
+      ],
+      "file_type": "gz",
+      "batch_size": 100
   },
-  "dir_structure": ["hit_label", "kit_label", "tech_label"],
-  "hit_labels": ["beater", "brush", "stick"],
-  "kit_labels": [
-    "bass_drum",
-    "crash",
-    "hi_hat",
-    "high_tom",
-    "mid_tom",
-    "low_tom",
-    "ride",
-    "snare",
-    "splash"
-  ],
-  "tech_labels": ["normal", "open"],
-  "cropping": {
-    "down_sampling_rate": 3000,
-    "hanning_window_size": 100,
-    "length": 0.1
+  "test":{
+      "path": "audio_data\\test_data",
+      "dir_structure": [
+        "hit_label",
+        "kit_label",
+        "tech_label"
+      ],
+      "file_type": "gz",
+      "batch_size": 100
+  }
   },
-  "preprocessed_data": {
-    "augmentations": ["add_white_noise", "remove_noise", "amplitude"],
-    "range": 10
+  "label": {
+    "hit_label": ["beater", "stick"],
+    "kit_label": [
+      "bass_drum",
+      "crash",
+      "hi_hat",
+      "high_tom",
+      "mid_tom",
+      "low_tom",
+      "ride",
+      "snare",
+      "splash"
+    ],
+    "tech_label": ["bell", "normal", "open"]
+  },
+  "label-hierarchy": {
+    "beater": { "bass_drum": ["normal"] },
+    "stick": {
+      "crash": ["normal"],
+      "hi_hat": ["normal", "open"],
+      "high_tom": ["normal"],
+      "mid_tom": ["normal"],
+      "low_tom": ["normal"],
+      "ride": ["normal", "bell"],
+      "snare": ["normal"]
+    }
   }
 }
