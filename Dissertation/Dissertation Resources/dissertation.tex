@@ -1,0 +1,126 @@
+%Preamble
+\documentclass[14pt]{article}   
+\usepackage[
+    a4paper,
+    total={7in,9in},
+    left=0.6in,
+    top=0.8in]{geometry}
+\usepackage{url}
+\usepackage{amsfonts}
+\usepackage[fleqn]{amsmath}
+\usepackage{amsthm}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage[utf8]{inputenc}
+\usepackage{csquotes}
+\usepackage[english]{babel}
+\usepackage[
+    backend=biber,
+    style=numeric,
+    sorting=ynt]{biblatex}
+\addbibresource{refs.bib}
+\makeatletter
+
+\newrobustcmd*{\parentexttrack}[1]{%
+    \begingroup
+    \blx@blxinit
+    \blx@setsfcodes
+    \blx@bibopenparen#1\blx@bibcloseparen
+    \endgroup}
+
+\AtEveryCite{%
+    \let\parentext=\parentexttrack%
+    \let\bibopenparen=\bibopenbracket%
+    \let\bibcloseparen=\bibclosebracket}
+
+\makeatother
+
+\newcommand{\BoxedImage}[4]{
+    \fbox{\includegraphics[scale=#1]{#2}}
+    \begin{figure}[h!]\caption{#4}\label{#3}\end{figure}}
+    
+\lstset{
+    basicstyle=\tiny,
+    showstringspaces=false,
+    tabsize=4}
+
+\newcommand{\CodeExample}[4]{
+    \begin{center}\begin{tabular}{|p{1.05\textwidth}|}
+    \hline
+    \lstinputlisting[language=#2]{#1}\\[1pt]
+    \hline
+    \end{tabular}
+    \captionof{figure}{#4}\label{#3}
+    \end{center}}
+
+%Contents page setup
+\title{Computer aided transcription: Can Neural Networks be used to analyse audio for generating drum-kit notation?}
+\author{Daniel Topping  100369076}
+\date{\today}
+
+%Document layout/content
+\begin{document}
+
+	%Contents page
+	\thispagestyle{empty}
+	\maketitle
+	\tableofcontents
+	\newpage
+
+	%First page
+	\setcounter{page}{1}
+	\section{Literature Review}
+	\subsection{Neural networks}
+	Artificial neural networks (NN's) are models loosely based upon the biological processes which happen in the central nervous system of complex organisms. They are models designed to approximate a function which addresses a sort of pattern in some data \cite{MIT_NN_Lecture1}; this is useful because once this approximation is in place the NN can recognise certain classes it has been trained to recognise in new data.
+	\\\\
+	The behaviour of neurons has been known to have useful applications in computing since 1943, when McCullock and Pitts explained that the characteristics of neurons made them useful in `propositional logic' \cite{McCullock_Pitts}. This is useful in computing, because neurons can be described as a `computational unit' \cite{Rojas}. During this time, simplistic neuron  models which resembled basic logic gates were used to solve problems, however these models were bespoke for the problems they addressed and so couldn't be reused for slightly different problems. \cite{Rojas}
+	\subsubsection{Biological neurons}
+	Neurons are useful, as inspiration for these models, because each neuron performs a decision. Neurons get excited by input from other neurons which travel across many synapses to the neuron. If this combined excitation reaches a threshold point; then the neuron fires a signal which propagates down its axon to other synapses of other neurons. But if it doesn't reach the threshold it doesn't fire. \cite{Rojas}
+	\subsubsection{Perceptrons (early neuron models)}	The `Perceptron' was introduced in 1958 and perfected in 1960 \cite{Rojas} which improved upon the prior model by adding weights to each input connection. This meant that learning algorithms could be used on a single perceptron, adjusting the connection weights incrementally to produce desirable output, without having to change the overall structure, as you would with a network of McCullock-Pitts neurons. However, perceptrons still had the downside of not being accurate when approximating when the decision boundary isn't linear \cite{Raschka}. 
+	\\\begin{center}
+	\BoxedImage{0.4}{rosenblattPerceptron.png}{fig:RosenblattPerceptron}{\parencite{Raschka}}
+	\end{center}
+	
+	\newpage
+	
+	\subsubsection{Neural networks}
+	Neural networks are when multiple neurons are layered to create more complexity, capable of understanding more sophisticated patterns. However, although these networks can be largely successful on their own they can be very resource intensive if they contain thousands of nodes so NN's aren't very well optimised if you just increase the amount of neurons without considering any processing which can simplify the data.
+	
+	\subsubsection{Convolutional neural networks}
+	Convolutional neural networks (CNN's) are neural networks which came about after D. H. Hubel and T. N Wiesels work on the visual cortex, where in their 1961 paper they describe a cats visual system. This work inspired a structural design of neural networks which neurons only took inputs from small regions of data. \cite{Stanford_CNN_Lecture}
+	\\\begin{center}
+	\BoxedImage{0.6}{ActivationMap.png}{fig:ActivationMap.png}{\parencite{Nielsen}}
+	\end{center}
+	
+	Modern CNN's perform some kind of filtering by having specially selected weights on the neurons. For example, in images, the Sobel operator can be used to do image smoothing and edge detection \cite{Cawsey}. Also after convolution layers a technique called pooling is often used to reduce the data into a smaller size \cite{Nielsen}.
+	\\\begin{center}
+	\BoxedImage{0.6}{ConvolutionPooling.png}{fig:ConvolutionPooling.png}{The standard CNN structure, with convolution and pooling layers \parencite{Yung}.}
+	\end{center}
+	
+	\newpage
+	 
+	\subsection{Obstacles}
+	\subsubsection{Creating training data}
+	While it is possible to create a dataset manually, this can take time and memory; especially if you want a high accuracy NN, because more is typically better.
+	\subsubsection{Multi-label data}
+	Many neural networks are designed to work using labels (what the data represents), that are mutually exclusive. So the MNIST dataset \cite{MNIST} for example has pictures of handwritten numbers with labels 0-9 and only one of these labels is true per image. However, in the case that I am going to investigate the labels are not mutually exclusive, because at one point in time multiple drum and cymbal combinations could be hit at once.\\\\
+	A cost function in the output layer needs to be used which will not be affected by the other output nodes, for this reason Softmax cannot be used since all output nodes sum to 1.0 with softmax.
+	It was found that the sigmoid function performed better than ReLU and hyperbolic functions by \cite{ghlmowyzz2017}.
+	
+	\subsubsection{Optimising to avoid local minima}
+	\cite{local_min}
+	\subsubsection{Overfitting}
+	Overfitting is when the machine learning technique used to approximate some unknown model, creates an overcomplicated model; which is very accurate to the training data, but not accurate (because of this overcomplexity) to new test data [\cite{Rojas}].
+	\cite{gmsw2016} found that it is best to use data augmentation to create transforms in the data space (before getting processed by a NN) than mid-way through in the feature space (after convolution layers, but before feature analysis layers of a NN).
+    \section{Abstract}
+    
+    %Bibliography
+	\nocite{*}
+	\section{Bibliography}
+	%Heading=subibnumbered with title adds a subsection to the tableofcontents
+	%keyword restricts the sub reference of a specific   
+	\medskip
+	\printbibliography
+\end{document}
