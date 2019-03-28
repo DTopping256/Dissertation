@@ -43,14 +43,34 @@ class AudioGenerator(Sequence):
     def get_ys(self, labels):
         return labels_to_ys(labels)
     
-    def __init__(self, filenames, labels, data_type):
-        self.filenames, self.labels, self.batch_size = filenames, labels, SETTINGS.data[data_type]["batch_size"]
+    def __init__(self, filenames, labels, data_type, batch_size, shuffle=False):
+        self.filenames, self.labels, self.batch_size, self.shuffle = filenames, labels, batch_size, shuffle
         
     def __len__(self):
         return int(np.floor(len(self.filenames) / float(self.batch_size)))
 
     def __getitem__(self, idx):
-        batch_x = self.filenames[idx * self.batch_size:(idx + 1) * self.batch_size]
-        batch_y = self.labels[idx * self.batch_size:(idx + 1) * self.batch_size]
-        return np.array([np.loadtxt(file_name) for file_name in batch_x]).reshape(self.batch_size, 12000, 1), np.array(list(map(self.get_ys, batch_y)))
+        inds = self.indexes[idx * self.batch_size:(idx + 1) * self.batch_size]
+        batch_x, batch_y = [], []
+        for i in inds:
+            batch_x.append(self.filenames[i])
+            batch_y.append(self.labels[i])
+        data = [np.loadtxt(file_name) for file_name in batch_x]
+        checked_data = []
+        for d in data:
+            diff = len(d) - 12000
+            if (diff < 0):
+                d = np.pad(d, (0, abs(diff)), mode="constant")
+            elif (diff > 0):
+                d = d[:-diff]
+            checked_data.append(d)
+        checked_data = np.array(checked_data)
+        output = checked_data.reshape(self.batch_size, 12000, 1), np.array(list(map(self.get_ys, batch_y)))
+        return output
+    
+    def on_epoch_end(self):
+        self.indexes = np.arange(len(self.filenames))
+        if self.shuffle == True:
+            np.random.shuffle(self.indexes)
+            
 
