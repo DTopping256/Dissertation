@@ -112,6 +112,16 @@
       "file_type": "gz",
       "batch_size": 100
   },
+  "validation":{
+      "path": "audio_data\\validation_data",
+      "dir_structure": [
+        "hit_label",
+        "kit_label",
+        "tech_label"
+      ],
+      "file_type": "gz",
+      "batch_size": 100
+  },
   "test":{
       "path": "audio_data\\test_data",
       "dir_structure": [

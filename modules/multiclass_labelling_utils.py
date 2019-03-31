@@ -18,12 +18,41 @@ def hit_breakdown():
     return breakdown
 
 def unique_kit_class(*ts):
-    current_kt = ts[0].split("-")[0]
-    for t in ts[1:]:
-        kt = t.split("-")[0]
-        if kt == current_kt:
-            return False
+    for t1_i in range(len(ts)):
+        t1 = ts[t1_i]
+        current_kt = t1.split("-")[0]
+        ts_copy = [*ts]
+        ts_copy.pop(t1_i)
+        for t2 in ts_copy:
+            kt = t2.split("-")[0]
+            if kt == current_kt:
+                return False
     return True
+
+global kltls
+kltls = ['bass_drum-normal',
+ 'crash-normal',
+ 'hi_hat-normal',
+ 'hi_hat-open',
+ 'high_tom-normal',
+ 'low_tom-normal',
+ 'mid_tom-normal',
+ 'ride-bell',
+ 'ride-normal',
+ 'snare-normal']
+
+def set_to_hash(s):
+    i = 0
+    l = len(s)
+    s = list(s)
+    s.sort()
+    score = int((10**l - 1)/9)
+    for e in s:
+        ind = kltls.index(e)
+        inc = (ind)*len(kltls)**(l-i-1)
+        score += inc
+        i+=1
+    return score
 
 def kit_combinations():
     hit_combos = SETTINGS.data["multiclassed"]["hit_combinations"]
@@ -44,4 +73,5 @@ def kit_combinations():
         kit_combo_subset = list(filter(lambda x: x not in kit_combos, kit_combo_subset))
         # Add to kit_combos
         kit_combos.extend(kit_combo_subset)
+    kit_combos.sort(key=set_to_hash)
     return kit_combos
