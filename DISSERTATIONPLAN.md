@@ -118,8 +118,15 @@
   - [ ] Test data (augmented) accuracy and loss values. **12**
   - [ ] Confusion matrices. **13**
   - [ ] Was artificial data of a similar accuracy and loss to real data (did it work with same accuracy for drum beat)? **14**
-- [ ] Conclusion:
-  - [ ]
+- [ ] Conclusion: **15**
+  - [ ] How did the models perform with respect to accuracy.
+  - [ ] Did they underfit / generalise or overfit.
+  - [ ] Improvements.
+- [ ] Check marking criterion for extra marks **16**
+  - Does it flow?
+  - Are there grammar errors?
+  - Diagrams, tables and figures add to flow of report?
+  - Citings and figure numbers correct?
 
 ## Day progress
 
@@ -129,19 +136,21 @@ _AOY (anything outstanding from yesterday)_
 | ----------------------------- | ----------------- | -------------------------------- | ----------- | ----------------- | ----------------------- |
 | MDEs & P(1,2) & W(0,1,4,5,6a) | P(3,4,5) & W(AOY) | MEETING & P(AOY) & W(2,6b,6c,6d) | W(7,8,9,10) | W(AOY, 3?) CRYPTO | W(11,12,13,14)          |
 
-| Monday 08                     | Tuesday 09        | Wednesday 10                     | Thursday 11 | Friday 12         | Saturday 13 & Sunday 14 |
-| ----------------------------- | ----------------- | -------------------------------- | ----------- | ----------------- | ----------------------- |
-| MDEs & P(1,2) & W(0,1,4,5,6a) | P(3,4,5) & W(AOY) | MEETING & P(AOY) & W(2,6b,6c,6d) | W(7,8,9,10) | W(AOY, 3?) CRYPTO | W(11,12,13,14)          |
+| Monday 08   | Tuesday 09 | Wednesday 10                 | Thursday 11 | Friday 12 | Saturday 13 & Sunday 14 |
+| ----------- | ---------- | ---------------------------- | ----------- | --------- | ----------------------- |
+| MDEs W(AOY) | W(15, 16)  | W(AOY) MEETING (first draft) |             |           |                         |
 
-| Monday 15                     | Tuesday 16        | Wednesday 17                     | Thursday 18 | Friday 19         | Saturday 20 & Sunday 21 |
-| ----------------------------- | ----------------- | -------------------------------- | ----------- | ----------------- | ----------------------- |
-| MDEs & P(1,2) & W(0,1,4,5,6a) | P(3,4,5) & W(AOY) | MEETING & P(AOY) & W(2,6b,6c,6d) | W(7,8,9,10) | W(AOY, 3?) CRYPTO | W(11,12,13,14)          |
+| Monday 15 | Tuesday 16 | Wednesday 17 | Thursday 18 | Friday 19 | Saturday 20 & Sunday 21 |
+| --------- | ---------- | ------------ | ----------- | --------- | ----------------------- |
+|           |            | EASTER       |             |           |                         |
 
-| Monday 22                     | Tuesday 23        | Wednesday 24                     | Thursday 25 | Friday 26         | Saturday 27 & Sunday 28 |
-| ----------------------------- | ----------------- | -------------------------------- | ----------- | ----------------- | ----------------------- |
-| MDEs & P(1,2) & W(0,1,4,5,6a) | P(3,4,5) & W(AOY) | MEETING & P(AOY) & W(2,6b,6c,6d) | W(7,8,9,10) | W(AOY, 3?) CRYPTO | W(11,12,13,14)          |
+| Monday 22 | Tuesday 23 | Wednesday 24 | Thursday 25 | Friday 26 | Saturday 27 & Sunday 28 |
+| --------- | ---------- | ------------ | ----------- | --------- | ----------------------- |
+|           |            | EASTER       |             |           |                         |
 
 | Monday 29 | Tuesday 30 | Wednesday 01 | Thursday 02 | Friday 03 |
+| --------- | ---------- | ------------ | ----------- | --------- |
+|           |            | MEETING?     |             |           |
 
 **Key dates**
 
