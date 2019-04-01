@@ -1,4 +1,4 @@
 *.zip
-
+admin_docs/*
 audio_data/*
 !audio_data/raw_data/isolated_hits
