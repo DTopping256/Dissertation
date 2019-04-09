@@ -40,7 +40,7 @@ def multilabelled_labels_to_ys(labels):
     return ys
 
 # Multi-label problem: output -> labels
-def multilabelled_ys_to_labels(ys, threshold = 0.6):
+def multilabelled_ys_to_labels(ys, threshold = 0.5):
     labels = {"hit_label": [], "kit_label": [], "tech_label": []}
     for n in range(len(kltls)):
         kl, tl = kltls[n].split("-")
@@ -61,7 +61,7 @@ def onehot_superclass_labels_to_ys(labels):
     return to_categorical(label_i, len(kcs))
 
 # Superclass problem: output -> labels
-def onehot_superclass_ys_to_labels(ys, threshold = 0.6):
+def onehot_superclass_ys_to_labels(ys, threshold = 0.5):
     labels = {"hit_label": [], "kit_label": [], "tech_label": []}
     highest_val = np.amax(ys)
     if (highest_val >= threshold):
