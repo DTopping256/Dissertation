@@ -25,8 +25,8 @@ def plot_tensorflow_log(path):
     event_acc.Reload()
 
     # Select desired tags in the log file if they are present
-    desired_tags = ['loss', 'acc', 'hamming', 'kullback_leibler_divergence']
-    tag_axis_labels = {'loss': 'loss', 'acc': 'accuracy', 'hamming': 'hamming loss', 'kullback_leibler_divergence': 'KL divergence'} 
+    desired_tags = ['loss', 'acc', 'accuracy', 'binary_accuracy', 'rounded_all_or_nothing_acc', 'binary_crossentropy', 'kullback_leibler_divergence']
+    tag_axis_labels = {'loss': 'loss', 'acc': 'binary accuracy', 'accuracy': 'binary accuracy', 'binary_accuracy': 'binary accuracy', 'rounded_all_or_nothing_acc': "AON accuracy", 'binary_crossentropy': "binary cross-entropy" , 'kullback_leibler_divergence': 'KL divergence'} 
     tags = [t for t in desired_tags if t in event_acc.Tags()["scalars"]]
     training_tags, validation_tags = [], []
     for tag in tags:
