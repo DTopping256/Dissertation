@@ -1,3 +1,7 @@
 
 ModelA-(1D)-OneHot-BCE-ADAM_10-04-2019_10-36-18 | Unclassified: 6782 (0.3%)
 ModelA-(1D)-OneHot-KLD-ADAM_10-04-2019_18-45-24 | Unclassified: 6366 (0.2%)
+ModelB-(1D)-MultiHot-KLD-ADAM_10-04-2019_02-53-03 | Unclassified: 26400 (1.0%)
+ModelB-(1D)-OneHot-BCE-ADAGRAD_09-04-2019_15-00-38 | Unclassified: 0 (0.0%)
+ModelB-(1D)-OneHot-BCE-ADAM_07-04-2019_02-15-18 | Unclassified: 3364 (0.1%)
+ModelB-(1D)-OneHot-BCE-SGD_09-04-2019_11-03-27 | Unclassified: 26380 (1.0%)
