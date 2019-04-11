@@ -70,12 +70,15 @@ cm_dir = "confusion_matrices"
 def plot_confusion_matrix(y_true, y_pred, classes,
                           normalize=False,
                           title=None,
+                          filename=None,
                           cmap=plt.cm.RdYlGn):
-    if not title:
+    if title is None:
         if normalize:
             title = 'Normalized confusion matrix'
         else:
             title = 'Confusion matrix, without normalization'
+    if filename is None:
+        filename = 'confusion_matrix'
 
     # Compute confusion matrix
     cm = confusion_matrix(y_true, y_pred)
@@ -89,7 +92,7 @@ def plot_confusion_matrix(y_true, y_pred, classes,
 
     '''print(cm)'''
 
-    fig, ax = plt.subplots(figsize=(25,25))
+    fig, ax = plt.subplots(figsize=(30,30))
     im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
     ax.figure.colorbar(im, ax=ax)
     # We want to show all ticks...
@@ -114,7 +117,7 @@ def plot_confusion_matrix(y_true, y_pred, classes,
                     ha="center", va="center", fontsize="x-small",
                     color="black")
     fig.tight_layout()
-    plt.savefig(os.path.join(os.getcwd(), cm_dir, re.sub("[ :/]", "_", title[19:])+".svg"))
+    plt.savefig(os.path.join(os.getcwd(), cm_dir, filename))
 
 # Expect numpy arrays
 def onehot_to_kcs(y):
@@ -178,7 +181,7 @@ def load_and_test_model(name, problem_type, input_type):
         generator = None
         model = None
         gc.collect()
-    return (pred_y_inds, true_y_inds, unclassified)
+    return (pred_y_inds, true_y_inds, n, unclassified)
 
 def test_data_confusion_matrices(model_name):
     model_encoding_specifiers = {"OneHot": ONE_HOT, "MultiHot": MULTI_LABEL}
@@ -191,7 +194,7 @@ def test_data_confusion_matrices(model_name):
             encoding = model_encoding_specifiers[specifier]
         elif specifier in model_input_specifiers.keys():
             input_type = model_input_specifiers[specifier]
-    y_pred, y_true, unclassified = load_and_test_model(model_name, encoding, input_type)
+    y_pred, y_true, n, unclassified = load_and_test_model(model_name, encoding, input_type)
     y_pred, y_true = np.array(y_pred), np.array(y_true)
     formatted_name = " ".join([*specifiers, re.sub("-", "/", date), re.sub("-", ":", time)])
     print("\n\n"+formatted_name)
@@ -200,11 +203,12 @@ def test_data_confusion_matrices(model_name):
     print("\nUnclassified data:", unclassified)
 
     with open(os.path.join(os.getcwd(), cm_dir, "log.txt"), "a") as log_file:
-        log_file.write("{} - Unclassified: {}\n".format(formatted_name, unclassified))
+        log_file.write("{} | Unclassified: {} ({}%)\n".format(model_name, unclassified, round(unclassified/n, 1)))
 
     # Plot normalized confusion matrix
-    plot_confusion_matrix(y_true, y_pred, classes=np.array(kcs_strings), normalize=True,
-                        title='Confusion matrix - {}'.format(formatted_name))
+    if (y_pred.size > 0):
+        plot_confusion_matrix(y_true, y_pred, classes=np.array(kcs_strings), normalize=True,
+                        title='Confusion matrix - {}'.format(formatted_name), filename=model_name+".svg")
     
 
 '''
@@ -219,5 +223,13 @@ if __name__ == '__main__':
                     help='Model names')
     args = parser.parse_args()
     models = args.models if args.models is not None else list(map(lambda filename: filename[:-3], filter(lambda filename: ".h5" in filename, os.listdir(models_dir))))
+    existing_confusion_matrices = []
+    with open(os.path.join(os.getcwd(), cm_dir, "log.txt"), "r") as log_file:
+        logs = log_file.read().split("\n")
+        for l in logs:
+            existing_confusion_matrices.append(l.split("|")[0][:-1])
+
+    print(existing_confusion_matrices)
+    models = list(filter(lambda x: x not in existing_confusion_matrices, models))
     for model_name in models:
         test_data_confusion_matrices(model_name)
