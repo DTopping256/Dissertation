@@ -11,6 +11,7 @@ from sklearn.utils.multiclass import unique_labels
 from keras.models import model_from_json
 from keras import backend as K
 import tensorflow as tf
+from tqdm import tqdm
 import sys
 import os
 import re
@@ -21,6 +22,17 @@ sys.path.append("./modules")
 from multiclass_labelling_utils import kit_combinations
 from audio_utils import *
 
+gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.2)
+
+config = tf.ConfigProto(allow_soft_placement=True,
+                        device_count = {'CPU' : 1,
+                                        'GPU' : 1},
+                        log_device_placement = True,
+                        gpu_options=gpu_options
+                       )
+
+session = tf.Session(config=config)
+K.set_session(session)
 
 # In[2]:
 
@@ -64,6 +76,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
 classifier = svm.SVC(kernel='linear', C=0.01)
 y_pred = classifier.fit(X_train, y_train).predict(X_test)'''
 
+cm_dir = "confusion_matrices"
+
 def plot_confusion_matrix(y_true, y_pred, classes,
                           normalize=False,
                           title=None,
@@ -86,7 +100,7 @@ def plot_confusion_matrix(y_true, y_pred, classes,
 
     '''print(cm)'''
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(25,25))
     im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
     ax.figure.colorbar(im, ax=ax)
     # We want to show all ticks...
@@ -108,10 +122,10 @@ def plot_confusion_matrix(y_true, y_pred, classes,
     for i in range(cm.shape[0]):
         for j in range(cm.shape[1]):
             ax.text(j, i, format(cm[i, j], fmt),
-                    ha="center", va="center",
-                    color="white" if cm[i, j] > thresh else "black")
+                    ha="center", va="center", fontsize="x-small",
+                    color="black")
     fig.tight_layout()
-    plt.show()
+    plt.savefig(os.path.join(os.getcwd(), cm_dir, re.sub("[ :/]", "_", title[19:])+".svg"))
 
 
 # In[5]:
@@ -119,7 +133,11 @@ def plot_confusion_matrix(y_true, y_pred, classes,
 
 # Expect numpy arrays
 def onehot_to_kcs(y):
-    return np.where(y >= 0.5)
+    pred = np.where(y >= 0.5)[0]
+    if pred.size == 0:
+        return False
+    else:
+        return pred[0]
 
 def multihot_to_kcs(y):
     labels = multilabelled_ys_to_labels(y)
@@ -157,7 +175,7 @@ def load_and_test_model(name, problem_type, input_type):
     pred_y_inds, true_y_inds, unclassified = [], [], 0
     # Loop through however many batches until nearly all test data used
     try:
-        for i in range(n // batch_size):
+        for i in tqdm(range(n // batch_size)):
             batch_x, true_y = generator.__getitem__(i)
             pred_y = model.predict(batch_x)
             # Convert numpy arrays to kcs indexes and add them to lists
@@ -178,26 +196,31 @@ def load_and_test_model(name, problem_type, input_type):
     return (pred_y_inds, true_y_inds, unclassified)
 
 def test_data_confusion_matrices(model_name):
-    #model_name = "modelC_Log_MultiHot-bce-adam_06-04-2019_15-08-16"
-    y_pred, y_true, unclassified = load_and_test_model(model_name, MULTI_LABEL, LOG_SPECTROGRAM)
-    y_pred = np.array(y_pred).reshape(y_pred.shape[0])
-    y_true = np.array(y_true).reshape(y_true.shape[0])
-
-    formatted_name = re.sub("-", " ", " ".join(model_name.split("_")[:-2])).capitalize()
-    print(formatted_name)
-
-    # Plot non-normalized confusion matrix
-    plot_confusion_matrix(y_true, y_pred, classes=np.array(kcs_strings),
-                        title='Confusion matrix (without normalization), \t{}'.format(formatted_name))
+    model_encoding_specifiers = {"OneHot": ONE_HOT, "MultiHot": MULTI_LABEL}
+    model_input_specifiers = {"(1D)": TIME_SEQUENCE, "(linear 2D)" : LINEAR_SPECTROGRAM, "(log 2D)": LOG_SPECTROGRAM}
+    specifier_string, date, time = model_name.split("_") 
+    specifiers = specifier_string.split("-") 
+    encoding, input_type = None, None
+    for specifier in specifiers:
+        if specifier in model_encoding_specifiers.keys():
+            encoding = model_encoding_specifiers[specifier]
+        elif specifier in model_input_specifiers.keys():
+            input_type = model_input_specifiers[specifier]
+    y_pred, y_true, unclassified = load_and_test_model(model_name, encoding, input_type)
+    y_pred, y_true = np.array(y_pred), np.array(y_true)
+    formatted_name = " ".join(specifiers)+re.sub("-", "/", date)+re.sub("-", ":", time)
+    print("\n\n"+formatted_name)
+    print("y_pred:", y_pred)
+    print("\ny_true:", y_true)
+    print("\nUnclassified data:", unclassified)
 
     # Plot normalized confusion matrix
     plot_confusion_matrix(y_true, y_pred, classes=np.array(kcs_strings), normalize=True,
-                        title='Confusion matrix (with normalization), \t{}'.format(formatted_name))
-    plt.show()
-    print("Unclassified data: {}".format(unclassified))
+                        title='Confusion matrix - {}'.format(formatted_name))
+    
 
 '''
-Plots each binary Tensorflow log within the 'logs' root directory
+Loads each model into memory and runs the test data on it. Then plots the results into a confusion matrix.
 '''
 if __name__ == '__main__':
     import argparse
