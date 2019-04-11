@@ -1,0 +1,3 @@
+
+ModelA (1D) OneHot BCE ADAM10/04/201910:36:18 - Unclassified: 32
+ModelA (1D) OneHot KLD ADAM10/04/201918:45:24 - Unclassified: 25

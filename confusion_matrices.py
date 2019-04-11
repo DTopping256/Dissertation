@@ -34,15 +34,8 @@ config = tf.ConfigProto(allow_soft_placement=True,
 session = tf.Session(config=config)
 K.set_session(session)
 
-# In[2]:
-
-
 kcs_strings = list(map(lambda x: re.sub("-", " ", " & ".join(sorted(list(x)))), kit_combinations()))
 kcs_strings
-
-
-# In[3]:
-
 
 # Adapted from: https://machinelearningmastery.com/save-load-keras-deep-learning-models/
 models_dir = "models"
@@ -56,10 +49,6 @@ def load_model(name):
     loaded_model.load_weights(os.path.join(models_dir, name+".h5"))
     print("Loaded model from disk")
     return loaded_model
-
-
-# In[28]:
-
 
 # Adapted from: https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
 '''# import some data to play with
@@ -126,10 +115,6 @@ def plot_confusion_matrix(y_true, y_pred, classes,
                     color="black")
     fig.tight_layout()
     plt.savefig(os.path.join(os.getcwd(), cm_dir, re.sub("[ :/]", "_", title[19:])+".svg"))
-
-
-# In[5]:
-
 
 # Expect numpy arrays
 def onehot_to_kcs(y):
@@ -208,11 +193,14 @@ def test_data_confusion_matrices(model_name):
             input_type = model_input_specifiers[specifier]
     y_pred, y_true, unclassified = load_and_test_model(model_name, encoding, input_type)
     y_pred, y_true = np.array(y_pred), np.array(y_true)
-    formatted_name = " ".join(specifiers)+re.sub("-", "/", date)+re.sub("-", ":", time)
+    formatted_name = " ".join([*specifiers, re.sub("-", "/", date), re.sub("-", ":", time)])
     print("\n\n"+formatted_name)
     print("y_pred:", y_pred)
     print("\ny_true:", y_true)
     print("\nUnclassified data:", unclassified)
+
+    with open(os.path.join(os.getcwd(), cm_dir, "log.txt"), "a") as log_file:
+        log_file.write("{} - Unclassified: {}\n".format(formatted_name, unclassified))
 
     # Plot normalized confusion matrix
     plot_confusion_matrix(y_true, y_pred, classes=np.array(kcs_strings), normalize=True,
