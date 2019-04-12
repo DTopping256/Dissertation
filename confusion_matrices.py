@@ -203,7 +203,7 @@ def test_data_confusion_matrices(model_name):
     print("\nUnclassified data:", unclassified)
 
     with open(os.path.join(os.getcwd(), cm_dir, "log.txt"), "a") as log_file:
-        log_file.write("{} | Unclassified: {} ({}%)\n".format(model_name, unclassified, round(unclassified/n, 1)))
+        log_file.write("{} | Unclassified: {} ({})\n".format(model_name, unclassified, round(unclassified/n, 1)))
 
     # Plot normalized confusion matrix
     if (y_pred.size > 0):
