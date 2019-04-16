@@ -3,6 +3,7 @@
 
 import os
 import json
+from functools import reduce
 
 time_data = {}
 for log in os.listdir(os.path.join(os.getcwd(), "logs")):
@@ -19,7 +20,8 @@ def make_time_table(data):
     print("Durations per epoch (mins)")
     print(" & ".join(["Epoch", *list(map(str, range(1, 11)))]))
     for k, v in data.items():
-        print(" & ".join([k, map(lambda t: str(round(t/60, 1)), v[epoch_durations])]))
+        durations = list(map(lambda t: t/60, v["epoch_durations"]))
+        print(" & ".join([k, *list(map(lambda t: str(round(t, 1)), durations)), str(round(reduce(lambda acc, x: acc+x, durations, 0), 1))]))
 
 if __name__ == "__main__":
     print("Optimiser times")
