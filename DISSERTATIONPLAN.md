@@ -82,22 +82,22 @@
 
 ## Practical
 
-- [ ] Build and test third model. **1**
-- [ ] Record training time, loss and accuracy of the third model. **2**
-- [ ] Think about improvements to best model and make that. **3**
+- [x] Build and test third model. **1**
+- [x] Record training time, loss and accuracy of the third model. **2**
+- [x] Think about improvements to best model and make that. **3**
 - [ ] Build and test final model. **4**
 - [ ] Demo this running over a few drum beats (broken up with onset detection), comparing predicitons to real. **5**
 
 ## Writing
 
-- [ ] Lit review **0**
+- [x] Lit review **0**
   - Cut lit review and add more relevant/recent stuff
   - Summarize lit review process of why each thing is neccessary.
 - [ ] Finish abstract **1**
-- [ ] Create any vector images needed and add to dissertation **2**
+- [x] Create any vector images needed and add to dissertation **2**
 - [ ] Methodology: (finish & proof-read**3**)
-  - [ ] Raw data collection. **4**
-  - [ ] Processing and augmentation. **5**
+  - [x] Raw data collection. **4**
+  - [x] Processing and augmentation. **5**
   - [ ] Model designs: **6**
     - Model A (1D amplitude input data, high depth CNN, Inception, Dilation Causal Conv, Tanh activations, Multi-label) **6a**
     - Model B (1D amplitude input data, medium depth CNN, Skips, Dilation Causal conv, Leaky ReLU activations, Onehot labels) **6b**
@@ -108,16 +108,16 @@
     - SGD
     - Adam
   - Accuracy = mean(0-1LossF) **8**
-  - [ ] Tensorflow, collect accuracy and loss per epoch into log files. **9**
+  - [x] Tensorflow, collect accuracy and loss per epoch into log files. **9**
     - Binary crossentropy
     - Hamming loss
     - KL divergence
-  - [ ] Explain confusion matrices. **10**
+  - [x] Explain confusion matrices. **10**
 - [ ] Analysis:
   - [ ] Compare loss and accuracy of models over time (training / validation sets). **11**
-  - [ ] Test data (augmented) accuracy and loss values. **12**
-  - [ ] Confusion matrices. **13**
-  - [ ] Was artificial data of a similar accuracy and loss to real data (did it work with same accuracy for drum beat)? **14**
+  - [x] Test data (augmented) accuracy and loss values. **12**
+  - [x] Confusion matrices. **13**
+  - [x] Was artificial data of a similar accuracy and loss to real data (did it work with same accuracy for drum beat)? **14**
 - [ ] Conclusion: **15**
   - [ ] How did the models perform with respect to accuracy.
   - [ ] Did they underfit / generalise or overfit.
@@ -142,11 +142,11 @@ _AOY (anything outstanding from yesterday)_
 
 | Monday 15 | Tuesday 16 | Wednesday 17 | Thursday 18 | Friday 19 | Saturday 20 & Sunday 21 |
 | --------- | ---------- | ------------ | ----------- | --------- | ----------------------- |
-|           |            | EASTER       |             |           |                         |
+|           |            | EASTER       | W(6, 3)     | W(AOY)    | P(4,5) & W(11)          |
 
-| Monday 22 | Tuesday 23 | Wednesday 24 | Thursday 25 | Friday 26 | Saturday 27 & Sunday 28 |
-| --------- | ---------- | ------------ | ----------- | --------- | ----------------------- |
-|           |            | EASTER       |             |           |                         |
+| Monday 22 | Tuesday 23 | Wednesday 24 | Thursday 25 | Friday 26 | Saturday 27 & Sunday 28  |
+| --------- | ---------- | ------------ | ----------- | --------- | -----------------------  |
+| W(15)     | W(AOY)     | W(16)        | W(AOY)      | W(AOY)    | W(AOY) Finish and Submit |
 
 | Monday 29 | Tuesday 30 | Wednesday 01 | Thursday 02 | Friday 03 |
 | --------- | ---------- | ------------ | ----------- | --------- |
