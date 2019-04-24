@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 2.0 Partwise//EN"
+                                "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise version="3.0">
+  <movement-title>test</movement-title>
+  <identification>
+    <encoding>
+      <software>python-ly 0.9.5</software>
+      <encoding-date>2019-04-21</encoding-date>
+    </encoding>
+  </identification>
+  <part-list>
+    <score-part id="P1">
+      <part-name>drum-kit</part-name>
+    </score-part>
+  </part-list>
+  <part id="P1">
+    <measure number="1">
+      <attributes>
+        <divisions>2</divisions>
+        <key>
+          <fifths>0</fifths>
+          <mode>major</mode>
+        </key>
+        <time>
+          <beats>4</beats>
+          <beat-type>4</beat-type>
+        </time>
+        <clef>
+          <sign>percussion</sign>
+          <line>2</line>
+        </clef>
+      </attributes>
+      <note>
+        <unpitched>
+          <display-step>B</display-step>
+          <display-octave>3</display-octave>
+        </unpitched>
+        <duration>1</duration>
+        <type>eighth</type>
+        <voice>1</voice>
+      </note>
+    </measure>
+  </part>
+</score-partwise>
