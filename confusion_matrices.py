@@ -169,7 +169,7 @@ def load_and_test_model(name, problem_type, input_type):
             # Convert numpy arrays to kcs indexes and add them to lists
             for y_i in range(len(pred_y)):
                 pred_y_ind = get_ind[problem_type](pred_y[y_i])
-                if (pred_y_ind == False):
+                if (pred_y_ind is False):
                     unclassified += 1
                     continue
                 pred_y_inds.append(pred_y_ind)
