@@ -153,9 +153,9 @@ def read_data(data_type, file_index=0, batch_size=None, verbose=False, **kwargs)
 
 
 def check_in_file_data(file_data, hit_labels, kit_labels, tech_labels, pre_augs, post_augs):
-    hit_check = set(hit_labels) == set(file_data["hit_label"])
-    kit_check = set(kit_labels) == set(file_data["kit_label"])
-    tech_check = set(tech_labels) == set(file_data["tech_label"])
+    hit_check = set(hit_labels) == set(file_data["hit_labels"])
+    kit_check = set(kit_labels) == set(file_data["kit_labels"])
+    tech_check = set(tech_labels) == set(file_data["tech_labels"])
     pre_augs_check = set(pre_augs) == set(file_data["pre_augs"])
     post_augs_check = set(post_augs) == set(file_data["post_augs"])
     if hit_check and kit_check and tech_check and pre_augs_check and post_augs_check:
