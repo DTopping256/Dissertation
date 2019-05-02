@@ -28,7 +28,7 @@
 \usepackage[
     backend=biber,
     style=authoryear,
-    sorting=ynt]{biblatex}
+    sorting=nyt]{biblatex}
 \usepackage{caption}
 \usepackage{titling}
 \captionsetup{width=.6\textwidth}
@@ -50,9 +50,14 @@
 \fancyhead[L]{\leftmark}
 \fancyhead[R]{}
 
+% Biblatex url formatting
+\setcounter{biburllcpenalty}{100}
+\setcounter{biburlucpenalty}{200}
+\setcounter{biburlnumpenalty}{100}
+
+% Adding a forth layer of roman numeral 
 \setcounter{secnumdepth}{4}
 \setcounter{tocdepth}{4}
-   
 \titleformat{\paragraph}
 {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 \titlespacing*{\paragraph}
@@ -167,7 +172,7 @@
 	
 	A drum kit is an unpitched instrument, comprised of drums and cymbals that can be played to produce polyphonic rhythms called drum beats. Each drum/cymbal will have a unique timbre and different combinations of these will produce a different overall texture of sound. This paper focused on the development of neural network models with the purpose of learning the timbre of the various parts of a drum kit. This was so that as well as being able to determine which drum-cymbal combinations were hit, it could distinguish between different techniques that were used; capturing more musicality from the audio information.\medskip
 	
-	The benefits of neural networks that are able to recognise timbre, are that better AMT systems can be created, which have the potential to split songs into different scores for each instrument. This can be applied to other areas in sound and music as well, such as cancelling out the sound of instruments during music production, or generating artificial instrument timbres as shown by Google DeepMind's WaveNet \parencite{Oord2016}. This demonstrates that there are plenty of commercially viable applications for similar models in this area of industry.
+	The benefits of neural networks that are able to recognise timbre, are that better AMT systems can be created, which have the potential to split songs into different scores for each instrument. This can be applied to other areas in sound and music as well, such as cancelling out the sound of instruments during music production, or generating artificial instrument timbres as shown by Google DeepMind's WaveNet \parencite{Oord2016}. This demonstrates that there are plenty of commercially viable applications for similar models in this area of industry.\medskip
 	
 	\newpage
 	\subsection{Aims \& Objectives}
@@ -204,26 +209,26 @@
 	
 	In the first section, there is a brief overview of neural networks and the back-propagation technique, as this is fundamental to the aim of this dissertation. There is a larger emphasis on convolutional neural networks because these are the current state of the art neural network models. Also, various model design patterns and structures which have been discovered during the work on GoogLeNet, ResNet and WaveNet are covered; since features of these were implemented in the design of the models used in the methodology. This section concludes with the obstacles to training machine learning models, with potential solutions to some of them.\medskip
 	
-	In the second section, research into various sound analysis techniques was explained, to gain some understanding of how to measure timbre and how to create audio spectrograms. Also, this section covers onset detection which was used for making scripts to automate pre-processing.
+	In the second section, research into various sound analysis techniques was explained, to gain some understanding of how to measure timbre and how to create audio spectrograms. Also, this section covers onset detection which was used for making scripts to automate pre-processing.\medskip
 	
-	In the previous work section, an alternative method of drum kit transcription using non-negative spectrogram factorisation was investigated. It was shown that this method was very reliable at detecting and classifying drum hits in polyphonic music, although it only studied 3 parts of the drum kit.
+	In the previous work section, an alternative method of drum kit transcription using non-negative spectrogram factorisation was investigated. It was shown that this method was very reliable at detecting and classifying drum hits in polyphonic music, although it only studied 3 parts of the drum kit.\medskip
 	
-	The literature review finishes with some refined research questions, which will be investigated as multivariate configurations of the models in the methodology. 
+	The literature review finishes with some refined research questions, which will be investigated as multivariate configurations of the models in the methodology.\medskip
 	
 	\subsection{Neural networks}
 	\label{sec:neural_networks}
 	
-	Artificial Neural Network (NN) models are models loosely based upon the biological processes which happen in the central nervous system of complex organisms. They are models designed to approximate a function which represents a pattern in some data \parencite{Russell;Norvig1995}. For the purpose of this report, we will use NN models for supervised learning, although there are other ways NNs can be trained.
+	Artificial Neural Network (NN) models are models loosely based upon the biological processes which happen in the central nervous system of complex organisms. They are models designed to approximate a function which represents a pattern in some data \parencite{Russell;Norvig1995}. For the purpose of this report, we will use NN models for supervised learning, although there are other ways NNs can be trained.\medskip
 	
 	\subsubsection{Biological neurons}
 	\label{sec:biological_neurons}
 	
-	Neurons are useful as inspiration for data processing models because each neuron performs a decision. Neurons get excited by the input from other neurons, which travel across many synapses to the neuron. If this combined excitation reaches a threshold point, then the neuron fires a signal which propagates down its axon to the synapses of other neurons. But, if it doesn't reach this threshold it doesn't fire \parencite[p.18-20]{Rojas}. 
+	Neurons are useful as inspiration for data processing models because each neuron performs a decision. Neurons get excited by the input from other neurons, which travel across many synapses to the neuron. If this combined excitation reaches a threshold point, then the neuron fires a signal which propagates down its axon to the synapses of other neurons. But, if it doesn't reach this threshold it doesn't fire \parencite[p.18-20]{Rojas}.\medskip
 	
 	\subsubsection{Artificial neurons}
 	\label{sec:artificial_neurons}
 	
-	The behaviour of neurons has been known to have useful applications in computing since  \textcite{McCullock_Pitts} published their famous paper. They explained that the characteristics of neurons made them useful in `propositional logic', which is useful in computing because neurons can be utilised to make decisions when given data. During this time, simplistic neuron models which resembled basic logic gates were used to solve problems \parencite[p.99]{McCullock_Pitts}. However these models were quite restrictive, only using binary information as input/output and were bespoke for the problems they addressed, so they weren't reusable for slightly different problems \parencite[p.29-33]{Rojas}.
+	The behaviour of neurons has been known to have useful applications in computing since  \textcite{McCullock_Pitts} published their famous paper. They explained that the characteristics of neurons made them useful in `propositional logic', which is useful in computing because neurons can be utilised to make decisions when given data. During this time, simplistic neuron models which resembled basic logic gates were used to solve problems \parencite[p.99]{McCullock_Pitts}. However these models were quite restrictive, only using binary information as input/output and were bespoke for the problems they addressed, so they weren't reusable for slightly different problems \parencite[p.29-33]{Rojas}.\medskip
 	
 	\subsubsection{Perceptrons (early neuron models)}
 	\label{sec:perceptron}
@@ -240,13 +245,16 @@
     \subsubsection{Activation functions}
     \label{sec:activation_functions}
     
-    Activation functions, which can be linear or non-linear, map the sum of the input signals (which have a linear domain) to some range \parencite{Nwankpa2018}. Non-linear activation functions are crucial to neuron models because otherwise, they would only be capable of producing linear output, which restricts the usefulness of the model \parencite[p.567-568]{Russell;Norvig1995}. There are many types of non-linear functions which can be used as activation functions. More recently, there are 3 groups of activation functions that are widely used: Sigmoid, hyperbolic and rectified linear units (ReLU) \parencite{Nwankpa2018}. ReLU functions were found to perform well for NN models built for audio, in particular, Leaky ReLU which is a variation of ReLU where the function has a slight positive gradient for the negative part of the x-axis instead of being 0 as with regular ReLU \parencite{Maas2013}.
+    Activation functions, which can be linear or non-linear, map the sum of the input signals (which have a linear domain) to some range \parencite{Nwankpa2018}. Non-linear activation functions are crucial to neuron models because otherwise, they would only be capable of producing linear output, which restricts the usefulness of the model \parencite[p.567-568]{Russell;Norvig1995}.\medskip
+    
+    There are many types of non-linear functions which can be used as activation functions. More recently, there are 3 groups of activation functions that are widely used: Sigmoid, hyperbolic and rectified linear units (ReLU) \parencite{Nwankpa2018}. ReLU functions were found to perform well for NN models built for audio, in particular, Leaky ReLU which is a variation of ReLU where the function has a slight positive gradient for the negative part of the x-axis instead of being 0 as with regular ReLU \parencite{Maas2013}.\medskip
     
     \subsubsection{Back-propagation, loss functions and initial weights}
 	\label{sec:backprop_and_loss}
 	
-	The back-propagation algorithm adjusts weights of the inputs for each neuron incrementally so that the error (loss) is minimised. A loss function is a continuous function of the error between a prediction output of the model and the expected output that represents the actual class. This must be continuously differentiable so that optimisation algorithms such as gradient descent can minimise the loss function \parencite[p.580-581]{Russell;Norvig1995}.
-	Two functions which can be used as loss functions are binary cross-entropy (BCE) and Kullback-Leibler divergence (KLD) which orignate from information theory \parencite[p.34, p.67]{MacKay2013}. Research has indicated that the initial weights of neural network models has had an affect on overall effectiveness at learning as well. For models using hyperbolic activations, \textcite{Glorot2010} inspired `Glorot normal' distributions for selecting initial weights. Similarly, for ReLU activations, \textcite{HeNorm2015} inspired the `He normal' distributions for selecting initial weights. These loss functions and weight initialisers are provided by the \textcite{Keras} library.
+	The back-propagation algorithm adjusts weights of the inputs for each neuron incrementally so that the error (loss) is minimised. A loss function is a continuous function of the error between a prediction output of the model and the expected output that represents the actual class. This must be continuously differentiable so that optimisation algorithms such as gradient descent can minimise the loss function \parencite[p.580-581]{Russell;Norvig1995}.\medskip
+	
+	Two functions which can be used as loss functions are binary cross-entropy (BCE) and Kullback-Leibler divergence (KLD) which originate from information theory \parencite[p.34, p.67]{MacKay2013}. Research has indicated that the initial weights of neural network models has an affect on the overall effectiveness of learning. For models using hyperbolic activations, \textcite{Glorot2010} inspired `Glorot normal' distributions for selecting initial weights. Similarly, for ReLU activations, \textcite{HeNorm2015} inspired the `He normal' distributions for selecting initial weights. These loss functions and weight initialisers are provided by the \textcite{Keras} library.\medskip
 	
 	\subsubsection{Neural networks}
 	\label{sec:neural_networks2}
@@ -271,12 +279,12 @@
 	\subsubsection{Using more convolution layers instead of pooling layers}
 	\label{sec:strided_conv}
 	
-	\textcite{Springenberg2014} pointed out that by only using convolution layers in CNNs, less data is lost than with the more traditional CNNs which used pooling. The fully-convolutional NN has become a more popular approach since this observation, with the down-scaling of the sample space done by using convolution layers with stride 2, instead of the typically used max-pooling layers.
+	\textcite{Springenberg2014} pointed out that by only using convolution layers in CNNs, less data is lost than with the more traditional CNNs which used pooling. The fully-convolutional NN has become a more popular approach since this observation, with the down-scaling of the sample space done by using convolution layers with stride 2, instead of the typically used max-pooling layers.\medskip
 	
 	\subsubsection{Causal and dilated causal convolution layers}
 	\label{sec:dilated_causal_conv}
 	
-	In images, it makes sense to assume that the inputs around a given input have some relationship to that input since the dimensionality of the input is 2 space dimensions. However, with audio data, this assumption doesn't make sense, because time is a dimension. Instead, we assume that for a given input, it only has a relationship to inputs in the past from it. This is the idea behind the causal convolutions used by Google DeepMind's state of the art WaveNet \parencite{Oord2016}, where neurons are only given inputs from up until present in the sample space. Dilated causal convolutions increase the receptive field of the neurons while using the same amount of inputs by spacing the connections between each layer \parencite{Oord2016}. Both of these layers were shown to be useful in creating sparser CNN's, which increased computational performance as well as the accuracy of the models.
+	In images, it makes sense to assume that the inputs around a given input have some relationship to that input since the dimensionality of the input is 2 space dimensions. However, with audio data, this assumption doesn't make sense, because time is a dimension. Instead, we assume that for a given input, it only has a relationship to inputs in the past from it. This is the idea behind the causal convolutions used by Google DeepMind's state of the art WaveNet \parencite{Oord2016}, where neurons are only given inputs from up until present in the sample space. Dilated causal convolutions increase the receptive field of the neurons while using the same amount of inputs by spacing the connections between each layer \parencite{Oord2016}. Both of these layers were shown to be useful in creating sparser CNN's, which increased computational performance as well as the accuracy of the models.\medskip
 	
 	\subsubsection{Non-sequential NN designs}
 	\label{sec:nonsequencial-nn-designs}
@@ -295,7 +303,7 @@
 	
 	There are multiple ways of encoding multi-classed data. The multi-hot method is where each class is assigned to one label, each is encoded as `on' or `off' depending upon the presence of the class. The one-hot method can also be used, in this context each label is assigned to a super-set, representing some combination of classes with only one label encoded as `on' and the rest are `off' \parencite{ghlmowyzz2017}. For drum kit classes we will see that for the 10 drum/cymbal classes, there are 87 feasible hit combinations. This means that with one-hot encoding there are 87 labels and with multi-class encoding, there are 10 labels.\medskip
 	
-	An activation function in the output layer needs to be used which will normalise the output so that it is within the domain of the class encodings. From the report by \textcite{ghlmowyzz2017}, it seems that the Softmax function is better suited to output with one-hot encoding and the Sigmoid function is better suited to output with multi-hot encoding. Their reasoning for this is that the sum of Softmax output is 1, so it is easier to train one-hot encoded classes with Softmax and harder to train multi-hot encoded classes. Sigmoid functions were found to perform better than the ReLU functions and hyperbolic functions for the final activation layer of a multi-hot encoded problem, which was designed to predict combinations of 3 diseases using medical records \parencite{ghlmowyzz2017}.\medskip
+	An activation function in the output layer needs to be used which will normalise the output so that it is within the domain of the class encodings. From the report by \textcite{ghlmowyzz2017}, it seems that the Softmax function is better suited to output with one-hot encoding and the Sigmoid function is better suited to output with multi-hot encoding. Their reasoning for this is that the sum of Softmax output is 1, so it is easier to train one-hot encoded classes with Softmax and harder to train multi-hot encoded classes. Sigmoid functions were found to perform better than the ReLU functions and hyperbolic functions for the final activation layer of a multi-hot encoded model, which was designed to predict combinations of 3 diseases using medical records \parencite{ghlmowyzz2017}.\medskip
 	
 	\paragraph{Underfitting, overfitting and generalisation} \label{sec:overfitting}
 	As well as underfitting, where a machine learning model hasn't learnt enough from training on a data set, overfitting is also a problem. Overfitting is when the machine learning technique used to approximate some unknown model, creates an over-complicated model; which is very accurate to the training data, but not accurate to data which it hasn't encountered before  \parencite[p.143-145]{Rojas}. Optimally, models will generalise so that they can make accurate predictions on new and diverse data sets. A common regularisation technique is dropout, where random neuron connection weights are set to zero during training \parencite{Hinton2014}.\medskip
@@ -305,12 +313,13 @@
 	
 	While it is possible to create a labelled data set manually, this can take large amounts of time and physical storage; especially if you want a high accuracy NN because more data is typically better. A solution to this is data augmentation \parencite{gmsw2016}, where incremental transformations can be used to create new data and reduce overfitting (see section \ref{sec:machine_learning_obstacles} part  \ref{sec:overfitting}). \textcite{gmsw2016} found that it is best to use data augmentation to create transforms in the data space (before getting processed by a NN), rather than mid-way through in the feature space. Data augmentation can be done as a part of pre-processing or on the fly during training, depending upon the restrictions of the machine.\medskip
 	
-	Another aspect of data collection that is particularly relevant for classification problems, is that certain classes tend to naturally occur more frequently than others. This is a worse problem for smaller data sets because it becomes less feasible to remove the difference in data from the larger classes, as this reduces the size of the data set even more. The reason why this is a problem for NN models is that it will be less accurate at predicting classes with a smaller proportion of the input data. Synthetic Minority Over-sampling Technique (SMOTE) is a method proposed by \textcite{Chawla2002} to address this problem of imbalanced data sets.
-	It involves creating new unique samples of the minority class in the same way that data augmentation creates new unique samples. It was shown that this approach improved the classification accuracy of minority classes \parencite{Chawla2002}.
+	Another aspect of data collection that is particularly relevant for classification problems, is that certain classes tend to naturally occur more frequently than others. This is worse for smaller data sets because it becomes less feasible to remove the difference in data from the larger classes, as this reduces the size of the data set even more. The reason why this is a problem for NN models is that it will be less accurate at predicting classes with a smaller proportion of the input data. Synthetic Minority Over-sampling Technique (SMOTE) is a method proposed by \textcite{Chawla2002} to address the problem of imbalanced data sets.
+	It involves creating new unique samples of the minority class in the same way that data augmentation creates new unique samples. It was shown that this approach improved the classification accuracy of minority classes \parencite{Chawla2002}.\medskip
 	
 	Another problem is, what are the correct proportions of training, validation and test data to use when testing a model? Too much validation and test data can impede the overall training of a NN, and on the other hand, too little means that the metrics which measure performance are less accurate.\medskip
 	
-	\subsection{Sound analysis}\label{sec:sound_analysis}
+	\subsection{Sound analysis}
+	\label{sec:sound_analysis}
 	Timbre is the information in a sound which indicates to the listener what is producing the sound. Usually, timbre is used to describe what instrument is producing the sound; we will use timbre to distinguish what drum or cymbal is hit and when.\medskip
 	
 	Timbre differs to overall pitch because one instrument can produce a C note while another can also produce a C note, however, they both sound different due to the materials and how the sound is created.\medskip
@@ -323,7 +332,7 @@
 	
 	From work done on analysing the difference in the sound of violins by \textcite{Yokoyama2016}, it was shown using fast Fourier transforms, that playing style can also affect the overtones of the instrument. These can be used to detect playing technique as well as the instrument itself, which will be useful for the transcription of the technique for the drum kit.\medskip
 	
-	Fourier transforms can be done on a whole section of audio to generate a measure of frequency against magnitude for the whole segment. However sound changes over time, so to take the shape of a sound into account short-time Fourier transforms can be used to yield 2D spectrograms of the magnitude of the frequency over time \parencite[p.53]{Muller}.
+	Fourier transforms can be done on a whole section of audio to generate a measure of frequency against magnitude for the whole segment. However sound changes over time, so to take the shape of a sound into account short-time Fourier transforms can be used to yield 2D spectrograms of the magnitude of the frequency over time \parencite[p.53]{Muller}.\medskip
 	
 	\subsubsection{Onset detection}
 	\label{sec:onset_detection}
@@ -348,6 +357,7 @@
 	\textbf{Loss function}\\
 	Which loss function is better at training the neural network? \smallskip
 	
+	\newpage
 	\section{Methodology}
 	\setcounter{subsection}{-1}
 	\subsection{Introduction}
@@ -357,7 +367,7 @@
 	
 	When designing the models, some of the techniques found in research didn't always work when applied to this use case or had to be adapted because of the constraints of the computational power available; so the design methodology was incremental.\medskip 
 	
-	To resolve the refined research questions (see section \ref{sec:questions}); models A and B used 1D amplitude input data and model C used 2D spectrogram input data with the encoding of the output data and loss function being varied during training. When using one loss function to train the network, the others were used as metrics to aid in comparing the models, as well as a label specific accuracy (categorical accuracy or binary accuracy depending upon the encoding) and a class accuracy metric which can be used for all of the models.\medskip
+	To resolve the refined research questions (see section \ref{sec:questions}); models A and B used 1D amplitude input data and Model C used 2D spectrogram input data with the encoding of the output data and loss function being varied during training. When using one loss function to train the network, the others were used as metrics to aid in comparing the models, as well as a label specific accuracy (categorical accuracy or binary accuracy depending upon the encoding) and a class accuracy metric which can be used for all of the models.\medskip
 	
 	There is a large focus on how the input data was obtained in this methodology because NN models require large amounts of diverse data to work well.\medskip
 	
@@ -366,8 +376,8 @@
 	    \item Raw wave file data was obtained and pre-processed, so that it was a consistent format for the CNN models to train upon and there was plenty of natural variation.
 	    \item The amount of data was increased with data augmentation techniques and multi-class data was efficiently generated and labelled; using the assumption that training using synthetic multi-class data will produce a similar accuracy when predicting real multi-class data.
 	    \item The synthetic data was then divided into training, validation and testing data sets.
-	    \item The models were designed and adjusted by training them on a smaller subset of the data.
-	    \item Each CNN model was trained using the full data set and values of loss, accuracy and other relevant metrics per epoch\footnote{A full run over all of the training and validation data} were saved to a log file.
+	    \item The models were designed and adjusted by training them on a smaller subset of the training and validation data sets.
+	    \item Then for each working model, it was trained using the full data set and values of loss, accuracy and other relevant metrics per epoch\footnote{A full run over all of the training and validation data} were saved to a log file.
 	    \item The best model was improved and used to predict the drum/cymbal hits of data from a real beat and the accuracy was compared.
 	\end{enumerate}
 	
@@ -430,8 +440,8 @@
             \includegraphics[width=0.35\textwidth]{figures/recorded_bd_hh.pdf}&
             \includegraphics[width=0.35\textwidth]{figures/superimposed_bd_hh.pdf}\\
         \end{tabular}
-    \caption{\footnotesize{This compares an actual recording of a bass drum and hi-hat hit together (on the left), with a superimposed bass drum and hi-hat hits which were recorded separately (on the right). As you can see the waveforms look very similar. We can see a difference in translation since the superimposed hits start together and in the actual recording, there is a lag of a fraction of a second between where the drummer plays the bass drum followed by the hi-hat. Also, there is a change in relative amplitude of bass drum and hi-hat between the graphs, as the waveform of the hi-hat is a lot more clear and less distorted by the bass drum with the recorded version than with the superimposed version.}}
-    \label{fig:synthetic_vs_real}
+        \caption{\footnotesize{This compares an actual recording of a bass drum and hi-hat hit together (on the left), with a superimposed bass drum and hi-hat hits which were recorded separately (on the right). As you can see the waveforms look very similar. We can see a difference in translation since the superimposed hits start together and in the actual recording, there is a lag of a fraction of a second between where the drummer plays the bass drum followed by the hi-hat. Also, there is a change in relative amplitude of bass drum and hi-hat between the graphs, as the waveform of the hi-hat is a lot more clear and less distorted by the bass drum with the recorded version than with the superimposed version.}}
+        \label{fig:synthetic_vs_real}
     \end{figure}
     
     After the data is made into multi-class data, it makes sense for augmentations involving adding white noise and reducing noise to be applied uniformly. This is because noise won't vary with the instrument, but with the recording device.\medskip
@@ -450,8 +460,8 @@
             Multi-class just noise augmentations & 2140\\
             Multi-class with all augmentations & 116760\\\bottomrule
         \end{tabular}
-    \caption{\footnotesize{Number of files collected for the input data from each stage of processing. APT augmentations = amplitude-pitch-translation augmentations. Note: variants of the data were made which skipped certain steps, such as: 'multi-class with no augmentation' and 'multi-class just noise augmentations'.}}
-    \label{fig:data_origin_table}
+        \caption{\footnotesize{Number of files collected for the input data from each stage of processing. APT augmentations = amplitude-pitch-translation augmentations. Note: variants of the data were made which skipped certain steps, such as: 'multi-class with no augmentation' and 'multi-class just noise augmentations'.}}
+        \label{fig:data_origin_table}
     \end{figure}
     
     \subsubsection{Labelling and encoding}
@@ -464,11 +474,11 @@
     For this case, a matrix of size 87 (number of combinations) is produced, where the $j$\textsuperscript{th} bit is 1 and the rest are 0, with $j$ being the index of the hit combination label (see Appendix \ref{app:kit-combinations}).\medskip
     
     \textbf{Multi-hot encoding}\\
-    For this case a matrix of size 10 (number of classes) is produced, where a label is 1 if the drum/cymbal class is present in the combination. Note: a maximum of 3, 1's will be present at any given multi-hot matrix because of the hit combinations.
+    For this case a matrix of size 10 (number of classes) is produced, where a label is 1 if the drum/cymbal class is present in the combination. Note: for valid combinations, a maximum of 3 1's will be present at any given multi-hot matrix.\medskip
     
     \subsubsection{Spectrograms}
     \label{sec:spectrograms}
-    The generator object was also responsible for converting the audio into spectrograms (when necessary) in real-time. Spectrograms would be used for some of the models to compare their performance to other similar models using 1D amplitude. For creating the spectrograms, the spectrogram method of the SciPy package was used; which uses short-time Fourier transforms (see section \ref{sec:fourier_transforms}) to create 2D linear spectrogram output. It was found that to closer represent how humans hear, this could be made logarithmic; this had the effect of increasing the detail of the overtones shown but also increased the amount of noise in the spectrograms.
+    The generator object was also responsible for converting the audio into spectrograms (when necessary) in real-time. Spectrograms would be used for some of the models to compare their performance to other similar models using 1D amplitude. For creating the spectrograms, the spectrogram method of the SciPy package was used; which uses short-time Fourier transforms (see section \ref{sec:fourier_transforms}) to create 2D linear spectrogram output. It was found that to closer represent how humans hear, this could be made logarithmic; this had the effect of increasing the detail of the overtones shown but also increased the amount of noise in the spectrograms (see Figure \ref{fig:spectrograms}).\medskip
     
     \begin{figure}[H]
         \centering
@@ -480,19 +490,21 @@
             \includegraphics[width=0.45\textwidth]{figures/linear_spectrogram_ride_bell.png}&
             \includegraphics[width=0.45\textwidth]{figures/log_spectrogram_ride_bell.png}
         \end{tabular}
-    \caption{\footnotesize{Here are the 129x53 spectra of two ride cymbal hits. All have been normalised and represent the data that is given to the 2D CNN models. Linear magnitude is much less sensitive to small changes than logarithmic magnitude, however logarithmic magnitude suffers from having a lot of noise.}}
-    \label{fig:spectrograms}
+        \caption{\footnotesize{Here are the 129x53 spectra of two ride cymbal hits. All have been normalised and represent the data that is given to the 2D CNN models. Linear magnitude is much less sensitive to small changes than logarithmic magnitude. This means logarithmic magnitude suffers from having a lot of noise, however on the plus side, logarithmic magnitude exaggerates differences between timbres.}}
+        \label{fig:spectrograms}
     \end{figure}
     
     \subsubsection{Dividing input data into training, validation and test data sets}
-    The rationale behind dividing input data in this way is to have a measure of whether the model is underfitting, overfitting or is generalising (see section \ref{sec:overfitting}). The more data allocated to training the network compared to validation and testing, the less reliable the accuracy measure is for validation and testing; however, the network needs as much training data as possible to make accurate predictions in the first place. For this reason, the data was split 3:1:1 into training, validation and testing respectively. 
+    The rationale behind dividing input data in this way is to have a measure of whether the model is underfitting, overfitting or is generalising (see section \ref{sec:machine_learning_obstacles} part \ref{sec:overfitting}). The more data allocated to training the network compared to validation and testing, the less reliable the accuracy measure is for validation and testing; however, the network needs as much training data as possible to make accurate predictions in the first place. For this reason, the data was split 3:1:1 into training, validation and testing respectively.\medskip
     
     \subsection{Model design}
     There were 3 deep CNN models designed. For simplicity, they are referred to as Model A, Model B and Model C.\medskip
     
     All of the models used the following design principles, which were covered in the literature: start with convolution layers of a stride greater-than 1, to reduce the size of the sample space (see section \ref{sec:strided_conv}); every so often use dropout layers in the structure to randomly sever network connections during training (see section \ref{sec:machine_learning_obstacles} part \ref{sec:overfitting}), which increase in drop-rate\footnote{The probability that a connection is severed by a dropout layer during training.} as dropout layers occur deeper into the network; use 1x1 convolution layers instead of pooling layers to reduce the feature space (see section \ref{sec:nonsequencial-nn-designs}), preserving detail; and at regular intervals use skip connections (see Section \ref{sec:nonsequencial-nn-designs}), so that older features have a greater effect on output.\medskip
     
-    As an overview, Models A and B analyse 1-dimensional amplitude float data in the domain of -1.0 and 1.0, while Model C analyses spectrograms of the same data, made using short-time Fourier transforms (see Section \ref{sec:fourier_transforms}) with the SciPy python package. This data, in the form of spectrograms, have a different shape that is 2 dimensional instead of 1 dimensional. Model A has the largest number of layers compared to Models B and C which are similar in design except that C uses 2D convolution layers instead of 1D convolution layers. All models use skip connections, but only model A uses inception modules (see section \ref{sec:nonsequencial-nn-designs}). Models were made so that they could be run by a machine using the `GeForce GTX 650' graphics card, this involved making sure that layer shapes were small enough to fit into less than 2GB of memory. For this reason, multiple 2 stride convolution layers were used at the start of each model, to down-scale the sample space, some models used a maximum of 32 filters and the batch size was 50. The processing speed of model training, was proportional to the number of layers in the model, that the GPU and CPU had to process. This is because each layer needs to wait for the previous layer. 
+    As an overview, Models A and B analyse 1-dimensional amplitude float data in the domain of -1.0 and 1.0, while Model C analyses spectrograms of the same data, made using short-time Fourier transforms (see Section \ref{sec:fourier_transforms}) with the SciPy python package. This data, in the form of spectrograms, have a different shape that is 2 dimensional instead of 1 dimensional. Model A has the largest number of layers compared to Models B and C which are similar in design except that C uses 2D convolution layers instead of 1D convolution layers. All models use skip connections, but only Model A uses inception modules (see section \ref{sec:nonsequencial-nn-designs}).\medskip
+    
+    Models were made so that they could be run by a machine using the `GeForce GTX 650' graphics card, this involved making sure that layer shapes were small enough to fit into less than 2GB of memory. For this reason, multiple 2 stride convolution layers were used at the start of each model, to down-scale the sample space, some models used a maximum of 32 filters and the batch size was 50. The processing speed of model training, was proportional to the number of layers in the model, that the GPU and CPU had to process. This is because each layer needs to wait for the previous layer.\medskip
     
     \subsubsection{Model A}
     \label{sec:design_modelA}
@@ -538,20 +550,19 @@
                 \bottomrule
             \end{tabular}
         \end{scriptsize}
-        \caption{\footnotesize{A tabular representation of the structure of Model A. Where: CC layers denoted with `$x/y$' means $x$ kernel size by $y$ filters, `s' is the stride, `rate' is the probability of a dropped connection and `d' is the dilation rate. The matrix shape $(a, b, c)$ shows the batch size ($a$), sample space size ($b$) and the feature space size ($c$); after the flattened layer, the sample space and feature space become the same dimension ($b\times c$). Note: for CCs where the stride and dilation rate are not specified, the stride is 1 and the dilation rate is 1 (no dilation). The inception module is repeated 3 times to increase the depth of the NN model. See Appendix \ref{app:modelA_diagram} for the TensorBoard diagram.}}
+        \caption{\footnotesize{A tabular representation of the structure of Model A, where: CC layers denoted with `$x/y$' means $x$ kernel size by $y$ filters, `s' is the stride, `rate' is the probability of a dropped connection and `d' is the dilation rate. The matrix shape $(a, b, c)$ shows the batch size ($a$), sample space size ($b$) and the feature space size ($c$); after the flattened layer, the sample space and feature space become the same dimension ($b\times c$). Note: for CCs where the stride and dilation rate are not specified, the stride is 1 and the dilation rate is 1 (no dilation). See Appendix \ref{app:modelA_diagram} for the TensorBoard diagram.}}
         \label{fig:modelA_structure}
     \end{figure}
     
     As shown by Figure \ref{fig:modelA_structure}, Model A makes use of 4 convolution layers with a stride greater-than 1 at the beginning, which reduce the sample space from 12000 nodes to 500 while adding 32 filters to the feature space.\medskip
     
-    Model A uses the hyperbolic Tanh function as its activation function between layers. This function was found to perform well with the WaveNet NN model \parencite{Oord2016}.\medskip
+    Model A uses the hyperbolic Tanh function as its activation function between CC layers because Tanh was found to perform well with the WaveNet NN model \parencite{Oord2016}, with the weights initialised from random numbers based on the Glorot normal distribution (see section \ref{sec:backprop_and_loss}).\medskip
     
     Model A, has 3 lots of inception modules which split the activation of a 32 filter, dilated causal convolution layer into 4 distinct towers. For 3 of these towers, first, a convolution layer with a kernel size of 1 reduces the feature space to 1. This is then followed by another convolution layer with a larger kernel size (3, 5 or 7). For the other tower, a convolution layer of kernel size 1, with 32 filters is used. After this all of the towers' activations are concatenated along the feature axis which produces a layer with 128 filters and the sample space is kept the same. This is reduced back down to 32 filters by another convolution layer with a kernel size of 1 before being added to the activation from the skip connection. At the end of each module is a dropout layer which has a probability to sever connections during training, this increases from 15\% in the first module to 20\% in the second and is 25\% in the final module.\medskip
     
     After the inception modules, the CNN is flattened and put through a dense layer which has an output that is the same same as the encoded labels. The activation function throughout this model is Tanh apart from the final layer which is Softmax for one-hot encodings and Sigmoid for multi-hot encodings.
     
-    
-    
+    \newpage
     \subsubsection{Model B}
     \label{sec:design_modelB}
     
@@ -570,7 +581,7 @@
                 \cline{2-8}
                 &\multicolumn{5}{|l|}{CC 5/32 (s = 2)} & Leaky ReLU (g = 0.3) & $(B, 2000, 16)$ &\\
                 \cline{2-8}
-                &\multicolumn{5}{|l|}{CC 5/32 (s = 2)} & Leaky ReLU (g = 0.3) & $(B, 1000, 32)$ &\\
+                &\multicolumn{5}{|l|}{CC 3/32 (s = 2)} & Leaky ReLU (g = 0.3) & $(B, 1000, 32)$ &\\
                 \cline{2-8}
                 &\multicolumn{5}{|l|}{Dropout layer (rate = 0.1)} & - & $(B, 500, 32)$ &\\
                 \bottomrule
@@ -592,17 +603,17 @@
                 \bottomrule
             \end{tabular}
         \end{scriptsize}
-        \caption{\footnotesize{A tabular representation of the structure of Model B. Where: CC layers denoted with `$x/y$' means $x$ kernel size by $y$ filters, `s' is the stride, `rate' is the probability of a dropped connection, `d' is the dilation rate and `g' is the gradient of the negative part of the Leaky ReLU activation function. The matrix shape $(a, b, c)$ shows the batch size ($a$), sample space size ($b$) and the feature space size ($c$); after the flattened layer, the sample space and feature space become the same dimension ($b\times c$). Note: for CCs where the stride and dilation rate are not specified, the stride is 1 and the dilation rate is 1 (no dilation). The section with the stacked dilated convolution layers is repeated 3 times to increase the depth of the NN model. See Appendix \ref{app:modelB_diagram} for the TensorBoard diagram.}}
+        \caption{\footnotesize{A tabular representation of the structure of Model B, where: CC layers denoted with `$x/y$' means $x$ kernel size by $y$ filters, `s' is the stride, `rate' is the probability of a dropped connection, `d' is the dilation rate and `g' is the gradient of the negative part of the Leaky ReLU activation function. The matrix shape $(a, b, c)$ shows the batch size ($a$), sample space size ($b$) and the feature space size ($c$); after the flattened layer, the sample space and feature space become the same dimension ($b\times c$). Note: for CCs where the stride and dilation rate are not specified, the stride is 1 and the dilation rate is 1 (no dilation). See Appendix \ref{app:modelB_diagram} for the TensorBoard diagram.}}
         \label{fig:modelB_structure}
     \end{figure}
     
     As shown by Figure \ref{fig:modelB_structure}, Model B makes use of 4 convolution layers with a stride greater-than 1 at the beginning, which reduce the sample space from 12000 nodes to 500 while adding 32 filters to the feature space.\medskip
     
-    Model B uses Leaky ReLU (see section \ref{sec:activation_functions}) as an activation function between layers. The gradient of the negative part of Leaky ReLU was set to 0.3.\medskip
+    Model B uses Leaky ReLU (see section \ref{sec:activation_functions}) as an activation function between layers. The gradient of the negative part of Leaky ReLU was set to 0.3. The weights were initialised from random numbers based on the He normal distribution (see section \ref{sec:backprop_and_loss}).\medskip
     
     Model B has 3 lots of sections which contain stacked dilated CC layers. This section starts with a causal convolution layer with a kernel size of 1 and 1 filter to reduce the feature space. Then this is followed by 2 consecutive dilated CC layers which are dilated at a rate of 2. After this, the activation of the last dilated layer is added to the activation of the skip connection. At the end of the section is a dropout layer which has a probability to sever connections during training, this increases from 15\% in the first section to 20\% in the second and is 25\% in the final section.\medskip
     
-    After the stacked dilated CC sections, the CNN is flattened and put through a dense layer which has an output that is the same same as the encoded labels. The activation function throughout this model is Leaky ReLU apart from the final layer which is Softmax for one-hot encodings or Sigmoid for multi-hot encodings.
+    After the stacked dilated CC sections, the CNN is flattened and put through a dense layer which has an output that is the same same as the encoded labels. The activation function throughout this model is Leaky ReLU apart from the final layer which is Softmax for one-hot encodings or Sigmoid for multi-hot encodings.\medskip
     
     \subsubsection{Model C}
     \label{sec:design_modelC}
@@ -644,13 +655,13 @@
         \label{fig:modelC_structure}
     \end{figure}
     
-    As shown by Figure \ref{fig:modelC_structure}, Model C is very similar in structure to Model B. One difference is that it uses 2 convolution layers with a stride greater-than 1 at the beginning instead of 4, which reduce the sample space from 129x53 to 33x14 while adding 32 filters to the feature space. This is because this 2D representation of the data already isn't as high in resolution as the 1D equivalent ($129\times 53 = 6837$), so requires less down-sampling.\medskip
+    As shown by Figure \ref{fig:modelC_structure}, Model C is very similar in structure to Model B. One difference is that it uses 2 convolution layers with a stride greater-than 1 at the beginning instead of 4, which reduce the sample space from 129x53 to 33x14 while adding 32 filters to the feature space. This is because this 2D representation (input size: $129\times 53 = 6837$) of the data already isn't as high in resolution as the 1D equivalent (input size: 12000), so requires less down-sampling.\medskip
     
-    Like Model B, Model C uses Leaky ReLU (see section \ref{sec:activation_functions}) as an activation function between layers. The gradient of the negative part of Leaky ReLU was set to 0.3.\medskip
+    Like Model B, Model C uses Leaky ReLU (see section \ref{sec:activation_functions}) as an activation function between layers. The gradient of the negative part of Leaky ReLU was set to 0.3. The weights were initialised from random numbers based on the He normal distribution (see section \ref{sec:backprop_and_loss}).\medskip
     
     Similarly, Model C has 3 lots of sections which contain stacked dilated 2D convolution layers. This section starts with a 2D convolution layer with a kernel size of 1 and 1 filter to reduce the feature space. Then this is followed by 2 consecutive dilated CC layers which are dilated at a rate of 2. After this, the activation of the last dilated layer is added to the activation of the skip connection. At the end of the section is a dropout layer which has a probability to sever connections during training, this increases from 15\% in the first section to 20\% in the second and is 25\% in the final section.\medskip
     
-    After the stacked dilated CC sections, the CNN is flattened and put through a dense layer which has an output that is the same same as the encoded labels. The activation function throughout this model is Leaky ReLU apart from the final layer which is Softmax for one-hot encodings or Sigmoid for multi-hot encodings.
+    After the stacked dilated CC sections, the CNN is flattened and put through a dense layer which has an output that is the same same as the encoded labels. The activation function throughout this model is Leaky ReLU apart from the final layer which is Softmax for one-hot encodings or Sigmoid for multi-hot encodings.\medskip
     
     \subsection{Model training}
     All models were trained using back-propagation by minimising their respective loss functions.\medskip
@@ -658,28 +669,30 @@
     The loss functions and output label encoding was varied to capture every combination of these factors to ensure that they were tested fairly (see Figure \ref{fig:test_table}). This was done to see which combination performed the best (see section \ref{sec:questions}).\medskip
     
     \begin{figure}[H]
-    \begin{tabular}{l|l|l|}
-                                & \multicolumn{2}{c|}{Problem Type} \\
-        \hline
-        \multirow{2}{*}{Losses}  & One-hot \& BCE loss & Multi-hot \& BCE loss\\
-        \cline{2-3}
-        & One-hot \& KLD loss & Multi-hot \& KLD loss\\
-        \hline
-    \end{tabular}
-    \caption{The 5 problem-loss combinations which were run over each model.}
-    \label{fig:test_table}
+        \centering
+        \begin{tabular}{l|l|l|}
+            & \multicolumn{2}{c|}{Encoding type} \\
+            \hline
+            \multirow{2}{*}{Losses}  & One-hot \& BCE loss & Multi-hot \& BCE loss\\
+            \cline{2-3}
+            & One-hot \& KLD loss & Multi-hot \& KLD loss\\
+            \hline
+        \end{tabular}
+        \caption{The 4 encoding-loss configurations which were run over each model.}
+        \label{fig:test_table}
     \end{figure}
     
-    On certain training runs only the optimisation algorithm was changed to see whether there was a significant difference in minimisation of the loss function, the algorithms tested were: Stochastic Gradient Descent, Adagrad and Adam. Also for Model C linear spectrogram input was compared to logarithmic spectrogram input to see which gave the best accuracy. GPU processing was enabled which significantly increased processing speed, however, this meant reducing the size of the models and using smaller batches of input data so that the GPU didn't run out of memory.
+    On certain training runs only the optimisation algorithm was changed to see whether there was a significant difference in minimisation of the loss function, the algorithms tested were: Stochastic Gradient Descent, Adagrad and Adam. Also for Model C linear spectrogram input was compared to logarithmic spectrogram input to see which gave the best accuracy. GPU processing was enabled which significantly increased processing speed, however, this meant reducing the size of the models and using smaller batches of input data so that the GPU didn't run out of memory.\medskip
     
     \subsection{Model analysis}
-    For analysis of how well models performed the Keras API was used to calculate accuracy metrics for the models. Also to quantitively measure common mistakes of the models a confusion matrix was produced. 
+    For analysis of how well models performed the \textcite{Keras} API was used to calculate accuracy metrics for the models. Also to quantitatively measure common mistakes of the models, confusion matrices were produced.\medskip 
     
     \subsubsection{Accuracy metrics}
     During model analysis, an `all or nothing' (AON) class accuracy was a consistent metric, useful to compare the models. Accuracy in this context was the amount of entirely correct predictions (when the labels were rounded to 0 or 1) out of all predictions made.\medskip
     
-	For the `prediction' and `actual' MxN matrices ($L^{pred}$ and $L^{actual}$) where M is the amount of data in a batch and N is the amount of floating point labels representing the classes of that data.
+	For the `prediction' and `actual' MxN matrices ($L^{pred}$ and $L^{actual}$) where M is the amount of data in a batch and N is the amount of floating point labels representing the classes of that data. The following formulae is how this paper defined this accuracy.\medskip
     
+    \newpage
     \begin{gather*}
     	Acc_{AON} = \frac{N_{correct}}{N_{total}}\\\\
     	N_{correct} = \Sigma_{i=0}^{N_{total}}\left[\enspace\Pi_{j=0}^{n}\left(\enspace nint(L_{ij}^{pred})\enspace\overline{\oplus}\enspace L_{ij}^{actual}\right)\enspace\right]
@@ -689,7 +702,7 @@
 	    where: $N_{total}$ is the amount of audio data per batch, $N_{correct}$ is the amount of correctly predicted data per batch, $n$ is the number of labels for a given piece of data, $nint$ represents a rounding function, $L_{ij}^{pred}$ is the prediction for the $i$\textsuperscript{th} piece of audio's, $j$\textsuperscript{th} label, $L_{ij}^{actual}$ is the actual $i$\textsuperscript{th} piece of audio's  $j$\textsuperscript{th} label and $\overline{\oplus}$ represents the XNOR binary operation. Note: $int(L_{ij}^{pred})$ and $L_{ij}^{actual}$ are either 0 or 1, since $L_{ij}^{actual}$ is either 0 or 1 by definition and $L_{ij}^{pred} \in [0, 1]$, which is the range of the Softmax and Sigmoid functions on the final layer.
 	\end{footnotesize}\bigskip
 	
-	This was used to compare the overall accuracy of one-hot encoded models and multi-hot encoded models since label accuracy is measured differently for these problems. For instance, categorical accuracy was used to measure accuracy for one-hot problems and binary accuracy was used to measure the accuracy of multi-hot problems. The following formulae, represent the categorical and binary accuracy metrics based on the Keras metrics source-code \parencite{Keras}.
+	This was used to compare the overall accuracy of one-hot encoded models and multi-hot encoded models since label accuracy is measured differently for these problems. For instance, categorical accuracy was used to measure accuracy for one-hot problems and binary accuracy was used to measure the accuracy of multi-hot problems. The following formulae, represent the categorical and binary accuracy metrics based on the Keras metrics source-code \parencite{Keras}.\medskip
 	
 	\begin{gather*}
 	    \intertext{For categorical accuracy:}
@@ -705,7 +718,7 @@
 	    Acc_{b} = \frac{\Sigma_{i=0}^{N_{total}} \left( correctLabel_{i} \right) }{N_{total}}\\
 	    \intertext{where}
 	    correctLabel_i = \frac{\Sigma_{j=0}^{n}\left( \enspace nint(L_{ij}^{pred}) \enspace \overline{\oplus} \enspace L_{ij}^{actual}\enspace \right)}{n}
-	    \intertext{\textit{Note: binary accuracy is similar to the AON accuracy except an average of correct labels is taken rather than the product}}\\
+	    \intertext{\textit{Note: binary accuracy is similar to the AON accuracy except an average of correct labels is taken rather than the product}}
 	    \intertext{To show how they differ, given the one-hot scenario with 2 pieces of data and 4 labels:}
 	    pred = \begin{bmatrix}
 	    0.7 & 0.2 & 0.05 & 0.05\\
@@ -732,7 +745,7 @@
 	\end{gather*} \medskip
 	
 	\subsubsection{Confusion matrices}
-	A confusion matrix is a square matrix of the one-hot encoded predictions against the one-hot encoded actual values \parencite{Powers2007}. For the multi-hot encoded problems, these were converted into one-hot encodings; however as the multi-hot models would occasionally predict infeasible kit combinations (that couldn't be one-hot encoded), these didn't appear in the confusion matrix and the number of these `unclassified' predictions was noted.
+	A confusion matrix is a square matrix of the one-hot encoded predictions against the one-hot encoded actual values \parencite{Powers2007}. For the multi-hot encoded problems, these were converted into one-hot encodings; however as the multi-hot models would occasionally predict infeasible kit combinations (that couldn't be one-hot encoded), these didn't appear in the confusion matrix and the number of these `unclassified' predictions was noted.\medskip
 	
 	\subsubsection{Summary}
 	Categorical accuracy was used as the label accuracy for one-hot problems as it is closer to class accuracy than binary accuracy for these problems but binary accuracy shall be used for multi-hot problems since categorical accuracy only works when in each `actual' matrix of labels there is one label that is greater than the others. The AON accuracy works the same irrespective of whether one-hot or multi-hot encoding is used because it measures the accuracy of predicting entirely correct classes instead of the labels.\medskip
@@ -741,7 +754,7 @@
     
     For a given model we can observe underfitting when the training loss is significantly greater than the validation loss ($Loss_t > Loss_v$ indicates underfitting). Similarly, we can observe overfitting when the training loss is significantly less than the validation loss ($Loss_t < Loss_v$ indicates overfitting). Optimally, these losses would be similar, showing that the model is generalising \parencite{Stallard}.\medskip
     
-    Finally, confusion matrices were made using test data, for each configuration of each model, to observe distributions of where the model was correct or incorrect which is important in noticing what the common mistakes were and could provide insight into potential causes.
+    Finally, confusion matrices were made using test data, for each configuration of each model, to observe distributions of where the model was correct or incorrect which is important in noticing what the common mistakes were and could provide insight into potential causes.\medskip
     
     \newpage
 	\section{Analysis}
@@ -753,12 +766,12 @@
     
     The training times of each epoch for every model with the Adam optimiser was also recorded as well as the total time taken to complete 10 epochs. The totals on average were: Model A $\approx 266$ minutes, Model B $\approx 202$ minutes and Model C $\approx 220$ minutes (see Appendix \ref{app:model_processing_times}). This suggests that the difference between the processing speed of the models is negligible since Model A's average was brought up by a single training session which took 426 minutes to complete. When ignoring this outlier, the average of Model A becomes $\approx 213$ minutes.\medskip
     
-    For each model, the multi-hot encoded KLD loss configuration got stuck between epochs 1 and 2 during training at a slightly negative loss value and didn't learn. 
+    For each model, the multi-hot encoded KLD loss configuration got stuck between epochs 1 and 2 during training at a slightly negative loss value and didn't learn.\medskip 
 	
 	\subsubsection{Model A}
 	\label{sec:training_analysis_modelA}
 	
-	As we can see from the loss and accuracy graphs for model A in Appendix \ref{app:modelA_training}, both of the one-hot encoded configurations were trained successfully and so was the multi-hot encoded configuration with BCE loss, however, the multi-hot encoded configuration with KLD loss didn't train.\medskip
+	As we can see from the loss and accuracy graphs for Model A in Appendix \ref{app:modelA_training}, both of the one-hot encoded configurations were trained successfully and so was the multi-hot encoded configuration with BCE loss, however, the multi-hot encoded configuration with KLD loss didn't train.\medskip
 	
 	When comparing the one-hot encoded configurations, BCE and KLD performed very similarly. With both losses, the training loss and validation loss converge by the 10\textsuperscript{th} epoch. Also, the accuracy curves of both are very similar, however, KLD was slightly more accurate than BCE throughout. KLD was quicker than BCE at minimising the loss for the first 5 epochs because the loss gradients were steeper, however with KLD the magnitude of the gradient is always steadily decreasing, but with BCE after the 4\textsuperscript{th} epoch the loss decreases at a steady rate and it minimises at a steeper gradient than KLD towards the end; catching it up in accuracy.\medskip
 	
@@ -767,31 +780,31 @@
 	\subsubsection{Model B}
 	\label{sec:training_analysis_modelB}
 	
-	For model B (see Appendix \ref{app:modelB_training}), again both of the one-hot encoded configurations were trained successfully, while only the multi-hot encoded configuration with BCE loss trained and KLD loss didn't train.\medskip
+	For Model B (see Appendix \ref{app:modelB_training}), again both of the one-hot encoded configurations were trained successfully, while only the multi-hot encoded configuration with BCE loss trained and KLD loss didn't train.\medskip
 	
-	When comparing the one-hot encoded configurations, BCE and KLD again performed very similarly. With both losses, the training loss and validation loss converge by the 8\textsuperscript{th}-9\textsuperscript{th} epoch. Looking at the KLD loss for each by the 10\textsuperscript{th} epoch the training and validation loss looks like it could be diverging with validation being greater than training loss. Again, the accuracy curves of both are very similar, however, KLD was slightly more accurate than BCE throughout. Unlike model A, the loss gradients start to plateaux for both configurations so it is likely that Model B won't get much more accurate past 10 epochs.\medskip
+	When comparing the one-hot encoded configurations, BCE and KLD again performed very similarly. With both losses, the training loss and validation loss converge by the 8\textsuperscript{th}-9\textsuperscript{th} epoch. Looking at the KLD loss for each by the 10\textsuperscript{th} epoch the training and validation loss looks like it could be diverging with validation being greater than training loss. Again, the accuracy curves of both are very similar, however, KLD was slightly more accurate than BCE throughout. Unlike Model A, the loss gradients start to plateaux for both configurations so it is likely that Model B won't get much more accurate past 10 epochs.\medskip
 	
-	With multi-hot encoded BCE loss, again the training and validation loss values don't converge, remaining a similar distance apart throughout the 10 epochs of training. The values of the loss curve for multi-hot encoding are significantly greater than those of both the one-hot encoded configurations.
+	With multi-hot encoded BCE loss, again the training and validation loss values don't converge, remaining a similar distance apart throughout the 10 epochs of training. The values of the loss curve for multi-hot encoding are significantly greater than those of both the one-hot encoded configurations.\medskip
 	
 	\subsubsection{Model C}
 	\label{sec:training_analysis_modelC}
 	
-	For model C (see Appendix \ref{app:modelC_training}), when it was trained using linear magnitude spectrogram data the models didn't work. Either classifying all of the data to one class or leaving all of the data unclassified, so was very inaccurate.\medskip
+	For Model C (see Appendix \ref{app:modelC_training}), when it was trained using linear magnitude spectrogram data the models didn't work. Either classifying all of the data to one class or leaving all of the data unclassified, so was very inaccurate.\medskip
 	
-	When logarithmic magnitude spectrogram data was used only the configurations with BCE loss worked. However, as before with Models A and B, the one-hot encoded configuration minimised the loss to much lower values than the multi-hot configuration and the training and validation loss values were very close together with one-hot and further apart with multi-hot. With one-hot encoding the training and validation loss values meet by about the 7\textsuperscript{th} epoch, then they diverge, but the validation loss still decreases. We can also see this with the accuracy graphs for the one-hot encoded BCE loss configuration as well.
+	When logarithmic magnitude spectrogram data was used only the configurations with BCE loss worked. However, as before with Models A and B, the one-hot encoded configuration minimised the loss to much lower values than the multi-hot configuration and the training and validation loss values were very close together with one-hot and further apart with multi-hot. With one-hot encoding the training and validation loss values meet by about the 7\textsuperscript{th} epoch, then they diverge, but the validation loss still decreases. We can also see this with the accuracy graphs for the one-hot encoded BCE loss configuration as well.\medskip
 	
-	With logarithmic magnitude, both of the KLD loss configurations got stuck by the 2\textsuperscript{nd} epoch and didn't learn.
+	With logarithmic magnitude, both of the KLD loss configurations got stuck by the 2\textsuperscript{nd} epoch and didn't learn.\medskip
 	
 	\subsection{Evaluation}
 	\label{sec:evaluation_analysis}
-    The evaluation of the models was done after each model and its configuration was trained for 10 epochs. The evaluation was done with a different `testing' data set to the data sets used for training and validation. Metrics, amount of unclassified data and confusion matrices were produced during the model evaluations.
+    The evaluation of the models was done after each model and its configuration was trained for 10 epochs. The evaluation was done with a different `testing' data set to the data sets used for training and validation. Metrics, amount of unclassified data and confusion matrices were produced during the model evaluations.\medskip
     
     \subsubsection{General observations}
     \label{sec:evaluation_general}
     
     The confusion matrices show either a strong positive correlation for results to fall close to the identity matrix, where class predictions by the models are very accurate to the true class values or a vertical bar which shows that models guessed the same class for each true class and didn't learn. On less accurate models, the confusion matrices show a significant tendency to underestimate the number of classes in the data, as a fern-like pattern, made of vertical and diagonal lines, can be observed along the left side of the confusion matrix.\medskip
     
-    Whenever KLD loss was used with multi-hot encoding, the loss value would always get stuck at a value of -1.2910 x $10^{-5}$. The resulting output would always have all of the labels set to 1.0 (`on'), which isn't a valid combination of classes. For this reason, there are no confusion matrices for these configurations since a guess has to be a valid combination to appear in the matrix. To account for this, it was recorded for each configuration how many times it made an `unclassified' prediction. A prediction was unclassified when either: no labels were greater than or equal to 50\% activation or when an invalid set of labels were over 50\% activation.
+    Whenever KLD loss was used with multi-hot encoding, the loss value would always get stuck at a value of -1.2910 x $10^{-5}$. The resulting output would always have all of the labels set to 1.0 (`on'), which isn't a valid combination of classes. For this reason, there are no confusion matrices for these configurations since a guess has to be a valid combination to appear in the matrix. To account for this, it was recorded for each configuration how many times it made an `unclassified' prediction. A prediction was unclassified when either: no labels were greater than or equal to 50\% activation or when an invalid set of labels were over 50\% activation.\medskip
     
 	\subsubsection{Model A}
 	\label{sec:evaluation_analysis_modelA}
@@ -816,7 +829,7 @@
 	        Average & 3.2431 & 0.7323 & 0.7758 & 0.5678 & 0.4761 & 0.4239\\
 	       \bottomrule
 	    \end{tabular}
-	    \caption{The results of model A for the various configurations as a decimal percentage of the test data set.}
+	    \caption{The results of Model A for the various configurations as a decimal percentage of the test data set.}
 	    \label{fig:modelA}
 	\end{figure}
 	
@@ -830,7 +843,7 @@
 	
 	Mistaking one class for another class was quite rare with one-hot encoding, although the place this happened the most was with the different hi-hat and ride cymbal techniques; particularly with mistaking a `normal ride' hit for a `ride bell' hit at 11\% for one-hot encoding with KLD loss. This happened to a lesser extent than first expected with the different tom drums (2-5\%). With multi-hot encoding, there were many false positive predictions with the classes containing a `crash', which can be seen by the vertical lines on columns featuring a crash.\medskip
 	
-	Overall, for the classified data from the configurations of model A, one-hot encoding and BCE loss gave the most consistent looking confusion matrix with one-hot encoding and KLD loss showing a slight tendency to underestimate the amount of classes and predicting incorrect techniques. Multi-hot encoding and BCE loss showed the most mistakes in its predictions however, made the more classified predictions than both of the one-hot configurations. Multi-hot encoding and BCE loss made large amounts of underestimation mistakes, had a tendency to overestimate as well and predicted incorrect classes with similar timbre too.
+	Overall, for the classified data from the configurations of Model A, one-hot encoding and BCE loss gave the most consistent looking confusion matrix with one-hot encoding and KLD loss showing a slight tendency to underestimate the amount of classes and predicting incorrect techniques. Multi-hot encoding and BCE loss showed the most mistakes in its predictions however, made the more classified predictions than both of the one-hot configurations. Multi-hot encoding and BCE loss made large amounts of underestimation mistakes, had a tendency to overestimate as well and predicted incorrect classes with similar timbre too.\medskip
 	
 	\subsubsection{Model B}
 	\label{sec:evaluation_analysis_modelB}
@@ -855,17 +868,17 @@
 	        Average & 3.2400 & 0.5913 & 0.8600 & 0.5672 & 0.5400 & 0.3675\\
 	       \bottomrule
 	    \end{tabular}
-	    \caption{The results of model B for the various configurations as a decimal percentage of the test data set.}
+	    \caption{The results of Model B for the various configurations as a decimal percentage of the test data set.}
 	    \label{fig:modelB}
 	\end{figure}
 	
-	Model B like Model A, gave very similar accuracy results for both of the loss functions, when one-hot encoding was used. Again KLD was slightly more accurate (2.27\%) than BCE. When multi-hot encoding was used, only BCE loss was successful at learning; with KLD having 0\% (AON) class accuracy. Also, BCE with multi-hot encoding was significantly lower in accuracy (-30.8\%) than BCE with one-hot encoding.
+	Model B, like Model A, gave very similar accuracy results for both of the loss functions, when one-hot encoding was used. Again KLD was slightly more accurate (2.27\%) than BCE. When multi-hot encoding was used, only BCE loss was successful at learning; with KLD having 0\% (AON) class accuracy. Also, BCE with multi-hot encoding was significantly lower in accuracy (-30.8\%) than BCE with one-hot encoding.\medskip
 	
 	\paragraph*{Prediction distribution}
 	
 	From the confusion matrices obtained from Model B (see Appendix \ref{app:modelB_confusion_matrix}), the same behaviour can be observed from Model A but to a lesser extent. One-hot encoded configurations were correct for the majority of the time. The classes that these configurations struggled with identifying the most were the tom drums and the different techniques of ride cymbal (`normal ride' and `ride bell'). Model B did a lot less overestimation of the amount of classes in some data, however the multi-hot encoding with BCE loss configuration still heavily underestimated the amount of classes and did this more so than Model A. For instance it actually misidentified `high tom' and `mid tom' as solo `mid tom' at a rate of 63\%. The multi-hot encoding with BCE loss configuration was more accurate in predicting solo classes than one-hot encoding with BCE loss, but it can be seen that the multi-hot configuration had much larger amounts of false positives for these classes; especially with solo `bass drum' false positives.\medskip
 	
-	Overall, for the classified data from the configurations of model B, one-hot encoding and BCE loss gave the most consistent confusion matrix with one-hot encoding and KLD loss showing a very slight tendency to underestimate the amount of classes and predicting incorrect techniques although this is only significant with classes containing a `crash'. Multi-hot encoding and BCE loss showed the most mistakes in its predictions. Multi-hot encoding and BCE loss made large amounts of underestimation mistakes, had a tendency to overestimate as well and predicted incorrect classes with similar timbre too.
+	Overall, for the classified data from the configurations of Model B, one-hot encoding and BCE loss gave the most consistent confusion matrix with one-hot encoding and KLD loss showing a very slight tendency to underestimate the amount of classes and predicting incorrect techniques although this is only significant with classes containing a `crash'. Multi-hot encoding and BCE loss showed the most mistakes in its predictions. Multi-hot encoding and BCE loss made large amounts of underestimation mistakes, had a tendency to overestimate as well and predicted incorrect classes with similar timbre too.\medskip
 	
 	\subsubsection{Model C}
 	\label{sec:evaluation_analysis_modelC}
@@ -904,53 +917,101 @@
     	       \bottomrule
     	    \end{tabular}
     	\end{footnotesize}
-	    \caption{The results of model C for the various configurations as a decimal percentage of the test data set.}
+	    \caption{The results of Model C for the various configurations as a decimal percentage of the test data set.}
 	    \label{fig:modelC}
 	\end{figure}
 	
-	With Model C, linear magnitude spectrograms performed poorly with none of the configurations reaching 1\% (AON) class accuracy. Logarithmic magnitude spectrograms with KLD didn't learn, irrespective of the encoding used, but when using BCE loss they did learn. Again one-hot encoding did significantly better than multi-hot encoding with a difference of 15.7\%.
+	With Model C, linear magnitude spectrograms performed poorly with none of the configurations reaching 1\% (AON) class accuracy. Logarithmic magnitude spectrograms with KLD didn't learn, irrespective of the encoding used, but when using BCE loss they did learn. Again one-hot encoding did significantly better than multi-hot encoding with a difference of 15.7\%.\medskip
 	
 	\paragraph*{Prediction distribution}
 	
 	With linear magnitude spectrograms the confusion matrices show why these were so inaccurate (see Appendix \ref{app:modelC_confusion_matrix}), because they selected the same classes for all of the data. For one-hot encoding with KLD loss all of the predictions were for `bass drum' with `open hi-hat' and with `high tom', while for multi-hot encoding with BCE loss all of the predictions were for `bass drum' with `normal hi-hat' and `normal ride'. Both one-hot encoding with BCE loss and multi-hot encoding with KLD loss left 100\% of test data as unclassified, producing no confusion matrices.\medskip
 	
-	With logarithmic magnitude spectrograms the confusion matrices show that for BCE loss configurations the models tend to underestimate as well as slightly underestimate the number of classes as before with Models A and B. An interesting new feature of Model C's confusion matrices for BCE loss are that diagonal lines appear either side of the middle diagonal, suggesting that the model had some trouble in particular with deciding the presence of the `bass drum' class in the data; sometimes including it where it wasn't there or excluding it when it was.
+	With logarithmic magnitude spectrograms the confusion matrices show that for BCE loss configurations the models tend to underestimate as well as slightly underestimate the number of classes as before with Models A and B. An interesting new feature of Model C's confusion matrices for BCE loss are that diagonal lines appear either side of the middle diagonal, suggesting that the model had some trouble in particular with deciding the presence of the `bass drum' class in the data; sometimes including it where it wasn't there or excluding it when it was.\medskip
 	
-	Overall, the most consistent configuration of Model C was one-hot encoding with BCE loss on input data of logarithmic magnitude, however this had particular difficulty differentiating between different drum classes (for example, mid-tom was predicted as low-tom incorrectly 19\% of the time) and was also prone to underestimating the number of classes; in particular with the bass drum. Multi-hot encoding with BCE loss on input data of logarithmic magnitude was the other model which learnt, but was very inaccurate especially with identifying multi-classed data as it heavily underestimated the amount of classes in the data; this caused very low levels of accuracy for hits with 3 classes. Configurations with input of linear magnitude didn't learn at all either having 100\% of data unclassified or predicting the same class. 
+	Overall, the most consistent configuration of Model C was one-hot encoding with BCE loss on input data of logarithmic magnitude, however this had particular difficulty differentiating between different drum classes (for example, mid-tom was predicted as low-tom incorrectly 19\% of the time) and was also prone to underestimating the number of classes; in particular with the bass drum. Multi-hot encoding with BCE loss on input data of logarithmic magnitude was the other model which learnt, but was very inaccurate especially with identifying multi-classed data as it heavily underestimated the amount of classes in the data; this caused very low levels of accuracy for hits with 3 classes. Configurations with input of linear magnitude didn't learn at all either having 100\% of data unclassified or predicting the same class.\medskip 
 	
 	\newpage
 	\section{Conclusion}
 	
 	\subsection{Comparison of models}
-	The best model was Model B because it learned at a faster rate than the others and reached a higher level of accuracy over 10 epochs. In particular, the one-hot encoded variant performed the best, reaching the highest accuracy (see section \ref{sec:evaluation_analysis_modelB}). Model B appears to have generalised by the 8\textsuperscript{th} epoch for KLD loss and the 10\textsuperscript{th} epoch for BCE loss since the training and validation loss curves meet at this point (see Appendix \ref{app:modelB_training}). Training this model much further than 10 epochs, could risk the model overfitting.
+	The best model was Model B because it learned at a faster rate than the others and reached a higher level of accuracy over 10 epochs. In particular, the one-hot encoded variant performed the best, reaching the highest accuracy (see section \ref{sec:evaluation_analysis_modelB}). Model B appears to have generalised by the 8\textsuperscript{th} epoch for KLD loss and the 10\textsuperscript{th} epoch for BCE loss since the training and validation loss curves meet at this point (see Appendix \ref{app:modelB_training}). Training this model much further than 10 epochs, could risk the model overfitting.\medskip
 	
 	\subsection{Comparison of input types}
 	
-	For the models that were tested. Model C didn't learn from linear spectrogram data, however, Model C did learn with logarithmic spectrogram data, the best configuration was 62.64\% accurate at predicting the correct drum kit classes. Models using amplitude data over time performed better than spectrogram data getting 69.30\% class accuracy for model A and 83.80\% class accuracy for model B. More models need to be tested in order to make a fair comparison as to whether 1D amplitude data is better than 2D spectrogram data for training drum kit timbre CNN models.\medskip
+	For the models that were tested. Model C didn't learn from linear spectrogram data, however, Model C did learn with logarithmic spectrogram data, the best configuration was 62.64\% accurate at predicting the correct drum kit classes. Models using amplitude data over time performed better than spectrogram data getting 69.30\% class accuracy for Model A and 83.80\% class accuracy for Model B. More models need to be tested in order to make a fair comparison as to whether 1D amplitude data is better than 2D spectrogram data for training drum kit timbre CNN models.\medskip
 	
-	Given more time I would have made another model for 2D spectrogram data, as it could be the model architecture that was reducing the accuracy instead of the format of the input data. However, this is hard to test because architectures need to change to accommodate for different formats of input data. 
+	Given more time I would have made another model for 2D spectrogram data, as it could be the model architecture that was reducing the accuracy instead of the format of the input data. However, this is hard to test because architectures need to change to accommodate for different formats of input data.\medskip
 	
 	\subsection{Comparison of encoding types}
 	
-	Over the models and losses tested, one-hot encoding consistently outperformed multi-hot encoding by significant margins of accuracy. This was expected, since only 87 combinations of drum kit hits were valid combinations and with multi-hot encoding had the capability to encode 1024 ($2^{10}$) combinations (937 of these were infeasible), which to the neural network started with equal probability. This undoubtedly made training take longer. An improvement would have been to use a smaller amount of bits of information in the output, but 87 doesn't partition into 2's to make an integer, so the closest we could get would be 7 bits and still have 41 infeasible combinations. Surprisingly, multi-hot encoding with BCE loss for models A and C left less data unclassified than the one-hot configurations despite the large amount of infeasible encodings, but this wasn't the case with Model B.
+	Over the models and losses tested, one-hot encoding consistently outperformed multi-hot encoding by significant margins of accuracy. This was expected, since only 87 combinations of drum kit hits were valid combinations and with multi-hot encoding had the capability to encode 1024 ($2^{10}$) combinations (937 of these were infeasible), which to the neural network started with equal probability. This undoubtedly made training take longer. An improvement would have been to use a smaller amount of bits of information in the output, but 87 doesn't partition into 2's to make an integer, so the closest we could get would be 7 bits and still have 41 infeasible combinations. Surprisingly, multi-hot encoding with BCE loss for models A and C left less data unclassified than the one-hot configurations despite the large amount of infeasible encodings, but this wasn't the case with Model B.\medskip
 	
 	\subsection{Comparison of loss functions}
 	
-	With one-hot encoding, KLD had slightly better accuracy compared to BCE, across all of the models. However, with multi-hot encoding, KLD gets stuck and doesn't learn at all whilst BCE loss configurations do learn. It is unclear what causes KLD to get stuck at a negative value, since as well as the encoding changing, the final activation layer changes which could impact the loss function. With each model, multi-hot with a KLD loss always set all of the labels to 1.0 (`on'), so it consistently had a class accuracy of 0.0\%.
+	With one-hot encoding, KLD had slightly better accuracy compared to BCE, across all of the models. However, with multi-hot encoding, KLD gets stuck and doesn't learn at all whilst BCE loss configurations do learn. It is unclear what causes KLD to get stuck at a negative value, since as well as the encoding changing, the final activation layer changes which could impact the loss function. With each model, multi-hot with a KLD loss always set all of the labels to 1.0 (`on'), so it consistently had a class accuracy of 0.0\%.\medskip
 	
 	\subsection{Final model}
 	
-	From the prior comparisons drawn, a final model was made by experimenting with Model B on a larger input data set. This model was initially trained with KLD loss, but this loss didn't scale well when the model was made larger, so BCE loss was used instead, which performed similarly to KLD loss on Model B. The final model was slightly deeper and used twice the amount of filter space. The final model got to 92.4\% accuracy with the larger data set, when the original model B was trained and tested on the larger data set, it scored 85.8\%; so the final model was a 6.6\% improvement.
+	The final model (v6) that was improved upon from Model B with one-hot encoding is shown in Figure \ref{fig:final_model}.
+	
+	\begin{figure}[H]
+        \centering
+        \begin{scriptsize}
+            \begin{tabular}{l|l|l|l|l|l|l|l|l|}
+                &\multicolumn{5}{c|}{Layers} & Activation & Matrix shape & Amount\\
+                \hline
+                \hline
+                \multirow{5}{2cm}{Initial down-sampling layers} &\multicolumn{5}{|l|}{CC 7/8 (s = 3)} & - & $(B, 12000, 1)$ &\multirow{5}{*}{x1}\\
+                \cline{2-8}
+                &\multicolumn{5}{|l|}{CC 7/16 (s = 2)} & Leaky ReLU (g = 0.05) & $(B, 4000, 8)$ &\\
+                \cline{2-8}
+                &\multicolumn{5}{|l|}{CC 5/32 (s = 2)} & Leaky ReLU (g = 0.05) & $(B, 2000, 16)$ &\\
+                \cline{2-8}
+                &\multicolumn{5}{|l|}{CC 3/64 (s = 2)} & Leaky ReLU (g = 0.05) & $(B, 1000, 32)$ &\\
+                \cline{2-8}
+                &\multicolumn{5}{|l|}{Dropout layer (rate = 0.1)} & - & $(B, 500, 64)$ &\\
+                \bottomrule
+                \multirow{5}{2cm}{Stacked dilated CC layers} &\multirow{3}{*}{Skip} & \multicolumn{4}{l|}{CC 1/1} & - & $(B, 500, 64)$ & \multirow{5}{*}{x4}\\
+                \cline{3-8}
+                & & \multicolumn{4}{l|}{Dilated CC 3/16 (d = 2)} & - & $(B, 500, 1)$ &\\
+                \cline{3-8}
+                & &\multicolumn{4}{l|}{Dilated CC 3/64 (d = 2)} & Leaky ReLU (g = 0.05) & $(B, 500, 16)$ &\\
+                \cline{2-8}
+                & \multicolumn{5}{|l|}{Matrix addition} & - & $(B, 500, 64)$ &\\
+                \cline{2-8}
+                & \multicolumn{5}{|l|}{Dropout layer (rates: 0.15, 0.20, 0.25)} & - & $(B, 500, 64)$ &\\
+                \bottomrule
+                \multirow{3}{2cm}{Flatten and dense layers} & \multicolumn{5}{|l|}{Flattened layer} & - & $(B, 500, 64)$ & \multirow{3}{*}{x1}\\
+                \cline{2-8}
+                & \multicolumn{5}{|l|}{Dense layer}& Softmax or Sigmoid & $(B, 32000)$ &\\
+                \cline{2-8}
+                & \multicolumn{5}{|l|}{Output} & - & $(B, 87)$ &\\
+                \bottomrule
+            \end{tabular}
+        \end{scriptsize}
+        \caption{\footnotesize{A tabular representation of the structure of the final model, where: CC layers denoted with `$x/y$' means $x$ kernel size by $y$ filters, `s' is the stride, `rate' is the probability of a dropped connection, `d' is the dilation rate and `g' is the gradient of the negative part of the Leaky ReLU activation function. The matrix shape $(a, b, c)$ shows the batch size ($a$), sample space size ($b$) and the feature space size ($c$); after the flattened layer, the sample space and feature space become the same dimension ($b\times c$). Note: for CCs where the stride and dilation rate are not specified, the stride is 1 and the dilation rate is 1 (no dilation).}}
+        \label{fig:final_model}
+    \end{figure}
+	
+	From the prior comparisons drawn, a final model was made by experimenting with Model B (with one-hot encoding) on a larger input data set (see Figure \ref{fig:final_model_comparison}). This model was initially trained with KLD loss since this performed best out of the configurations of Model B, but this loss didn't scale well when Model B was made larger, so BCE loss was used instead as it performed similarly to KLD loss (see section \ref{sec:training_analysis_modelB}). The final model was slightly deeper having 4 repeated sections of stacked dilated CC layers instead of 3, it used twice the amount of filter space (64 instead of 32) and the Leaky ReLU gradient has reduced to 0.05 from 0.3. Using a batch size of 100, version 6 of the final model got to 92.4\% accuracy with the larger data set after 10 epochs. When the original Model B was trained and tested on the larger data set with a batch size of 100, it scored 85.8\%; so the final model was a 6.6\% improvement upon Model B under the same conditions.\medskip
+	
+	\begin{figure}[H]
+	    \centering
+	    \includegraphics[width=0.75\textwidth]{figures/training_plots/FinalModelAccuracyComparison.pdf}
+	    \caption{A comparison of the final models in class accuracy over 10 epochs.}
+	    \label{fig:final_model_comparison}
+	\end{figure}
 	
 	\subsection{Summary}
 	
 	Following the methodology, 3 out of the 4 objectives (see section \ref{sec:aim_and_obj}) were met: 3 neural network models were designed and tested using synthetic multi-classed data from processed, isolated hits; drum kit timbre was shown to be a trainable feature across all of the classes; and a model was trained to a high degree of accuracy with the synthetic data.\medskip
 	
-	The best performing model was Model B, the one-hot with KLD loss configuration reaching 83.8\% (AON) class accuracy when evaluated using the original testing data set. Using a larger data set, Model B was re-trained and got to 85.8\% accuracy. Then, variations of Model B which tweaked depth, feature space and Leaky ReLU gradient were trained and tested, improving the accuracy to 92.4\%.\medskip
+	The best performing model was Model B, the one-hot with KLD loss configuration reaching 83.8\% (AON) class accuracy when evaluated using the original testing data set. Using a larger batch size and a larger data set, Model B was re-trained and got to 85.8\% accuracy. Then, variations of Model B which tweaked depth, feature space and Leaky ReLU gradient were trained and tested, improving the accuracy to 92.4\%.\medskip
 	
 	This was close to the accuracy of the other drum kit classification model from the literature review (see section \ref{sec:previous_work}) which got 99\% accuracy, but this model classified 10 classes containing audio of similar timbres compared to the model in the literature, which classified 3 classes which had distinct timbres.\medskip
 	
-	Unfortunately, there was not enough time to apply this final model to real drum beats, which was the last objective. So it is not known how accurate these models are with real data. 
+	Unfortunately, there was not enough time to apply this final model to real drum beats, which was the last objective. So it is not known how accurate these models are with real data.\medskip 
 	
 	\subsection{Future work}
     
